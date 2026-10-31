@@ -1,0 +1,504 @@
+<title>Dasha Vaishnav Porwad Samaj</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700&family=Rozha+One&display=swap">
+<style>
+/* Layout: left rail + content on desktop, top scrolling nav on phones. Teal ink with marigold accent, drawn from temple-brass and monsoon-green rather than cream. */
+:root{
+  --bg:#eef3f3; --surface:#ffffff; --surface2:#f5f9f9; --ink:#12262b; --muted:#54696d; --line:#d6e0e1; --line2:#b9c9cb;
+  --brand:#0d4a50; --brand-ink:#ffffff; --brand-soft:#d9eceb;
+  --accent:#e29a14; --accent-ink:#2b1c00; --accent-soft:#fbeccb;
+  --good:#1c7a4a; --good-soft:#d9f0e3; --warn:#9a5b00; --warn-soft:#fdeccc; --bad:#b2352a; --bad-soft:#fadcd8;
+  --display:'Rozha One','Mukta',Georgia,serif; --body:'Mukta','Segoe UI',system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0c1719; --surface:#142427; --surface2:#1a2d30; --ink:#e6f0f0; --muted:#97adb0; --line:#26393c; --line2:#38504f;
+  --brand:#6fc7c0; --brand-ink:#052a2a; --brand-soft:#17383a;
+  --accent:#f0b13c; --accent-ink:#2b1c00; --accent-soft:#3a2d10;
+  --good:#5cc78c; --good-soft:#143a28; --warn:#f0b13c; --warn-soft:#3a2d10; --bad:#f08a7e; --bad-soft:#40201c; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0c1719; --surface:#142427; --surface2:#1a2d30; --ink:#e6f0f0; --muted:#97adb0; --line:#26393c; --line2:#38504f;
+  --brand:#6fc7c0; --brand-ink:#052a2a; --brand-soft:#17383a;
+  --accent:#f0b13c; --accent-ink:#2b1c00; --accent-soft:#3a2d10;
+  --good:#5cc78c; --good-soft:#143a28; --warn:#f0b13c; --warn-soft:#3a2d10; --bad:#f08a7e; --bad-soft:#40201c; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 40px}
+button,input,select,textarea{font:inherit;color:inherit}
+h1,h2,h3{margin:0;text-wrap:balance}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(1.6rem,3.4vw,2.2rem);line-height:1.15}
+h2{font-size:1.1rem;font-weight:700}
+h3{font-size:.98rem;font-weight:600}
+p{margin:0}
+.muted{color:var(--muted)} .small{font-size:.85rem} .tn{font-variant-numeric:tabular-nums}
+.lbl{font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.sample{background:var(--accent-soft);color:var(--ink);border:1px dashed var(--accent);border-radius:8px;padding:8px 12px;margin-top:12px;font-size:.85rem}
+
+header.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding-block:14px}
+.brand{display:flex;align-items:center;gap:10px;margin-right:auto;min-width:0}
+.mark{width:38px;height:38px;border-radius:10px;background:var(--brand);color:var(--brand-ink);display:grid;place-items:center;font-family:var(--display);font-size:.95rem}
+.brand b{font-family:var(--display);font-weight:400;font-size:1.25rem;display:block;line-height:1.1}
+.brand span{font-size:.78rem;color:var(--muted)}
+.ctl{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.ctl select,.ctl button{background:var(--surface);border:1px solid var(--line2);border-radius:8px;padding:6px 10px;cursor:pointer}
+
+.shell{display:grid;grid-template-columns:210px minmax(0,1fr);gap:24px;align-items:start}
+nav.rail{display:flex;flex-direction:column;gap:2px;position:sticky;top:12px}
+nav.rail button{display:flex;align-items:center;gap:10px;text-align:left;background:none;border:0;padding:9px 12px;border-radius:8px;cursor:pointer;color:var(--muted);font-weight:500}
+nav.rail button svg{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+nav.rail button:hover{background:var(--surface);color:var(--ink)}
+nav.rail button[aria-current="page"]{background:var(--brand);color:var(--brand-ink)}
+nav.rail .sep{margin:10px 12px 4px}
+main{min-width:0;display:flex;flex-direction:column;gap:20px}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;min-width:0}
+.card.flat{background:var(--surface2)}
+.row{display:flex;gap:16px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))}
+.grid.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr))}
+.stack{display:flex;flex-direction:column;gap:12px}
+.pagehead{display:flex;flex-direction:column;gap:4px}
+.btn{background:var(--brand);color:var(--brand-ink);border:0;border-radius:8px;padding:8px 16px;font-weight:600;cursor:pointer}
+.btn.alt{background:var(--surface);color:var(--ink);border:1px solid var(--line2)}
+.btn.gold{background:var(--accent);color:var(--accent-ink)}
+.btn.sm{padding:4px 10px;font-size:.85rem}
+.btn.bad{background:var(--bad-soft);color:var(--bad)}
+.btn[disabled]{opacity:.5;cursor:default}
+.pill{display:inline-block;font-size:.74rem;font-weight:600;padding:2px 9px;border-radius:99px;background:var(--brand-soft);color:var(--brand)}
+.pill.good{background:var(--good-soft);color:var(--good)} .pill.warn{background:var(--warn-soft);color:var(--warn)} .pill.bad{background:var(--bad-soft);color:var(--bad)} .pill.gold{background:var(--accent-soft);color:var(--warn)}
+
+.field{display:flex;flex-direction:column;gap:4px;min-width:0}
+.field label{font-size:.8rem;font-weight:600;color:var(--muted)}
+.field input,.field select,.field textarea{background:var(--surface);border:1px solid var(--line2);border-radius:8px;padding:8px 10px;min-width:0;width:100%}
+.form{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line2);background:var(--surface);border-radius:99px;padding:3px 12px;cursor:pointer;font-size:.88rem}
+.chip[aria-pressed="true"]{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+.tabs{display:flex;gap:4px;overflow-x:auto;border-bottom:1px solid var(--line);padding-bottom:0}
+.tabs button{background:none;border:0;border-bottom:3px solid transparent;padding:8px 12px;cursor:pointer;white-space:nowrap;color:var(--muted);font-weight:600}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+
+.stat b{display:block;font-family:var(--display);font-weight:400;font-size:1.9rem;line-height:1.1}
+.bar{height:8px;background:var(--line);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--brand);border-radius:99px}
+.bar.gold i{background:var(--accent)}
+.hero{background:var(--brand);color:var(--brand-ink);border-radius:14px;padding:22px;display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));align-items:center}
+.hero .lbl{color:inherit;opacity:.75}
+.hero .btn{background:var(--accent);color:var(--accent-ink)}
+.hero h2{font-family:var(--display);font-weight:400;font-size:1.5rem}
+
+.list{display:flex;flex-direction:column}
+.item{display:flex;gap:14px;padding:12px 0;border-top:1px solid var(--line);align-items:flex-start;min-width:0}
+.item:first-child{border-top:0;padding-top:0}
+.item>div{min-width:0}
+.date{flex:none;width:56px;text-align:center;border:1px solid var(--line2);border-radius:10px;overflow:hidden;background:var(--surface)}
+.date i{display:block;font-style:normal;background:var(--accent);color:var(--accent-ink);font-size:.7rem;font-weight:700;letter-spacing:.08em;padding:1px 0}
+.date b{display:block;font-family:var(--display);font-weight:400;font-size:1.4rem;line-height:1.3}
+.av{flex:none;width:42px;height:42px;border-radius:50%;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;font-weight:700}
+.av.f{background:var(--accent-soft);color:var(--warn)}
+
+.tblwrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:520px}
+th{text-align:left;font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:8px 10px;border-bottom:1px solid var(--line2)}
+td{padding:10px;border-bottom:1px solid var(--line);vertical-align:middle}
+td.r,th.r{text-align:right}
+
+.tiles{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}
+.tile{aspect-ratio:4/3;border-radius:8px;display:grid;place-items:end start;padding:6px 8px;font-size:.72rem;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.5)}
+.album{cursor:pointer;background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden;text-align:left;padding:0;display:flex;flex-direction:column}
+.album:hover{border-color:var(--brand)}
+.album .cover{aspect-ratio:16/10;display:grid;place-items:center;color:#fff;font-family:var(--display);font-size:1.5rem;text-shadow:0 1px 3px rgba(0,0,0,.4)}
+.album .meta{padding:10px 12px;display:flex;flex-direction:column;gap:2px}
+.mh{display:flex;align-items:baseline;gap:10px;margin-top:6px}
+.mh h2{font-family:var(--display);font-weight:400;font-size:1.4rem}
+
+.tree{overflow-x:auto;padding:8px 4px 16px}
+.tree ul{display:flex;justify-content:center;padding:20px 0 0;margin:0;position:relative;width:max-content;min-width:100%}
+.tree ul ul::before{content:"";position:absolute;top:0;left:50%;border-left:1px solid var(--line2);height:20px}
+.tree li{list-style:none;text-align:center;position:relative;padding:20px 8px 0}
+.tree li::before,.tree li::after{content:"";position:absolute;top:0;right:50%;width:50%;height:20px;border-top:1px solid var(--line2)}
+.tree li::after{right:auto;left:50%;border-left:1px solid var(--line2)}
+.tree li:only-child::before,.tree li:only-child::after{display:none}
+.tree li:only-child{padding-top:0}
+.tree li:first-child::before,.tree li:last-child::after{border:0 none}
+.tree li:last-child::before{border-right:1px solid var(--line2);border-radius:0 6px 0 0}
+.tree li:first-child::after{border-radius:6px 0 0 0}
+.tree>ul{padding-top:0}
+.tree>ul>li{padding-top:0}
+.tree>ul>li::before,.tree>ul>li::after{display:none}
+.couple{display:inline-flex;align-items:center;gap:0}
+.couple .join{width:14px;height:1px;background:var(--accent)}
+.node{background:var(--surface);border:1px solid var(--line2);border-radius:10px;padding:8px 10px;display:flex;gap:8px;align-items:center;cursor:pointer;text-align:left;width:148px}
+.node:hover,.node[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.node .av{width:32px;height:32px;font-size:.8rem}
+.node b{display:block;font-size:.84rem;line-height:1.2}
+.node small{color:var(--muted);font-size:.72rem}
+.node.out{border-style:dashed}
+
+.qr{display:grid;grid-template-columns:repeat(21,1fr);width:160px;aspect-ratio:1;background:#fff;padding:8px;border-radius:8px;border:1px solid var(--line2);gap:0}
+.qr i{background:#fff} .qr i.k{background:#111}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:10px;font-weight:600;z-index:20;max-width:90vw}
+.toggle{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.toggle:first-child{border-top:0}
+.sw{width:42px;height:24px;border-radius:99px;background:var(--line2);border:0;position:relative;cursor:pointer;flex:none}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left .15s}
+.sw[aria-checked="true"]{background:var(--good)} .sw[aria-checked="true"]::after{left:21px}
+.steps{display:flex;gap:8px;flex-wrap:wrap}
+.step{flex:1;min-width:110px;padding:8px 12px;border-radius:8px;border:1px solid var(--line2);font-weight:600;font-size:.88rem;color:var(--muted);background:var(--surface)}
+.step.on{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+.step.done{color:var(--good);border-color:var(--good)}
+
+@media (max-width:820px){
+  .shell{grid-template-columns:minmax(0,1fr);gap:12px}
+  nav.rail{flex-direction:row;overflow-x:auto;position:static;gap:4px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+  nav.rail button{white-space:nowrap;padding:7px 12px}
+  nav.rail .sep{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<header class="top">
+  <div class="brand"><div class="mark">श्री</div><div><b>Shri Dasha Vaishnav Porwad Samaj</b><span id="tagline">Jaipur chapter · FY 2026-27</span></div></div>
+  <div class="ctl">
+    <label class="small muted" for="role">Viewing as</label>
+    <select id="role"><option value="0">Member</option><option value="1">Treasurer</option><option value="2" selected>Central admin</option></select>
+    <button id="lang" type="button" aria-label="Switch language">English</button>
+    <button id="theme" type="button" aria-label="Switch theme">Theme</button>
+  </div>
+</header>
+
+<div class="shell">
+  <nav class="rail" id="nav" aria-label="Sections"></nav>
+  <main id="main"></main>
+</div>
+<div id="toast" class="toast" hidden></div>
+
+<script>
+const $=s=>document.querySelector(s);
+const ico={
+ home:'<path d="M3 11l9-8 9 8M5 10v10h14V10"/>',
+ cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+ img:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-8 8"/>',
+ users:'<circle cx="9" cy="8" r="3.5"/><path d="M2 20c0-4 3-6 7-6s7 2 7 6M17 5a3.5 3.5 0 010 7M22 20c0-3-2-5-5-5.5"/>',
+ plus:'<circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/>',
+ tree:'<circle cx="12" cy="5" r="2.5"/><circle cx="5" cy="19" r="2.5"/><circle cx="19" cy="19" r="2.5"/><path d="M12 7.5V12M5 16.5V12h14v4.5"/>',
+ rupee:'<path d="M7 5h11M7 10h11M7 5c6 0 6 9-1 9l8 6"/>',
+ heart:'<path d="M12 20s-8-5-8-11a4.5 4.5 0 018-2.5A4.5 4.5 0 0120 9c0 6-8 11-8 11z"/>',
+ shield:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/>'
+};
+const NAV=[
+ ['home','Home','मुख्य पृष्ठ','home',0],['events','Events & notices','कार्यक्रम व सूचना','cal',0],['gallery','Gallery','गैलरी','img',0],
+ ['directory','Directory','सदस्य सूची','users',0],['register','Register family','परिवार पंजीकरण','plus',0],['tree','Family tree','वंश वृक्ष','tree',0],
+ ['payments','Payments','भुगतान','rupee',0],['community','Community help','समाज सहयोग','heart',0],['admin','Admin','प्रबंधन','shield',1]
+];
+const S={role:2,hi:true,view:'home',rsvp:new Set([1]),openAlbum:null,gy:'All',gm:'All',ctab:'blood',pstep:1,members:[{n:'Mahesh Sharma',r:'Self (head)',d:'1976-04-12',g:'M'},{n:'Kavita Sharma',r:'Spouse',d:'1979-09-30',g:'F'}],
+ pending:[['Pooja Joshi','Sanganer · 4 members','₹4,000','UTR 6021 4478 1290','2 Nov'],['Anil Gupta','Mansarovar · 3 members','₹3,000','UTR 6021 3391 7745','2 Nov'],['Rekha Verma','Jhotwara · 5 members','₹2,500 (instalment 1)','Cash · Receipt book #82','1 Nov']],
+ regq:[['Deepak Soni','Sanganer','Head + 3 members','Today'],['Meena Rathore','Jhotwara','Head + 5 members','Yesterday'],['Karan Mehta','Vaishali Nagar','Head + 2 members','31 Oct']],
+ sw:{a:true,b:true,c:false,d:true}};
+
+function toast(t){const e=$('#toast');e.textContent=t;e.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>e.hidden=true,2600)}
+function nav(){
+  const n=$('#nav');let h='';
+  NAV.forEach(([id,en,hi,ic,min])=>{ if(S.role<min)return;
+    h+=`<button type="button" data-go="${id}" ${S.view===id?'aria-current="page"':''}><svg viewBox="0 0 24 24">${ico[ic]}</svg>${S.hi?hi:en}</button>`});
+  n.innerHTML=h;
+}
+const H={};
+/* ---------- HOME ---------- */
+H.home=()=>`
+<div class="pagehead"><span class="lbl">${S.hi?'नमस्ते':'Namaste'}, Mahesh ji</span><h1>${S.hi?'आपके परिवार का सार':'Your family at a glance'}</h1></div>
+<div class="sample">Sample data for design review. Names, amounts and photos are placeholders.</div>
+<section class="hero">
+  <div><span class="lbl">Sharma household · 4 members · FY 2026-27</span><h2>₹4,000 due by 31 March</h2><p class="small" style="opacity:.85;margin-top:4px">Last year's receipt #A-1182 is saved in Payments.</p></div>
+  <div class="row" style="justify-content:flex-start"><button class="btn" data-go="payments">Pay by UPI</button><button class="btn alt" data-go="payments" style="background:transparent;color:inherit;border-color:rgba(255,255,255,.5)">Ask for instalments</button><button class="btn alt" data-go="payments" style="background:transparent;color:inherit;border-color:rgba(255,255,255,.5)">Contribute for an occasion</button></div>
+</section>
+<div class="grid">
+  <div class="card stat"><span class="lbl">Households</span><b class="tn">1,284</b><span class="small muted">across 18 chapters</span></div>
+  <div class="card stat"><span class="lbl">Members</span><b class="tn">5,412</b><span class="small muted">38 added this month</span></div>
+  <div class="card stat"><span class="lbl">Dues collected</span><b class="tn">68%</b><div class="bar gold" style="margin-top:6px"><i style="width:68%"></i></div></div>
+  <div class="card stat"><span class="lbl">Next gathering</span><b class="tn">14 Nov</b><span class="small muted">Satyanarayan Katha, Jaipur</span></div>
+</div>
+<div class="grid g2">
+  <section class="card"><div class="row" style="margin-bottom:12px"><h2>Coming up</h2><button class="btn alt sm" data-go="events">All events</button></div><div class="list">${EV.slice(0,3).map(evRow).join('')}</div></section>
+  <section class="card"><div class="row" style="margin-bottom:12px"><h2>Notice board</h2><button class="btn alt sm" data-go="events">All notices</button></div><div class="list">${NO.slice(0,3).map(noRow).join('')}</div></section>
+</div>
+<div class="grid g2">
+  <section class="card"><h2 style="margin-bottom:10px">This week in the family</h2><div class="list">
+    <div class="item"><div class="av f">R</div><div><b>Rohan Sharma turns 18</b><p class="small muted">Friday 6 Nov · your nephew in Sanganer</p></div></div>
+    <div class="item"><div class="av">S</div><div><b>Suresh &amp; Neha, 12th anniversary</b><p class="small muted">Sunday 8 Nov</p></div></div>
+    <div class="item"><div class="av">+</div><div><b>Deepak Soni joined Sanganer chapter</b><p class="small muted">Approved by coordinator yesterday</p></div></div></div></section>
+  <section class="card"><h2 style="margin-bottom:10px">Needs your attention</h2><div class="list">
+    <div class="item"><span class="pill warn">Profile</span><div><b>2 members have no phone or blood group</b><p class="small muted">Add them so the blood donor list stays useful.</p></div></div>
+    <div class="item"><span class="pill gold">Tree</span><div><b>Link Aarav to his grandfather</b><p class="small muted">The tree shows 1 unlinked child.</p></div></div>
+    <div class="item"><span class="pill">RSVP</span><div><b>Annual Meet: reply by 10 Nov</b></div></div></div></section>
+</div>`;
+
+/* ---------- EVENTS ---------- */
+const EV=[
+ {id:1,t:'Satyanarayan Katha',d:'14',m:'NOV',when:'Sat 14 Nov 2026 · 7:00 am',v:'Shri Ram Mandir Hall, Jaipur',c:'Jaipur',type:'Religious',n:212},
+ {id:2,t:'Annual General Meet',d:'06',m:'DEC',when:'Sun 6 Dec 2026 · 10:30 am',v:'Samaj Bhawan, Indore',c:'All chapters',type:'Meeting',n:340},
+ {id:3,t:'Vivah Parichay Sammelan',d:'20',m:'DEC',when:'Sun 20 Dec 2026 · 11:00 am',v:'Hotel Marudhar, Jodhpur',c:'Open to all',type:'Function',n:158},
+ {id:4,t:'Blood Donation Camp',d:'10',m:'JAN',when:'Sun 10 Jan 2027 · 9:00 am',v:'Sanganer Community Hall',c:'Sanganer',type:'Service',n:64}];
+const NO=[
+ {t:'Dues for FY 2026-27 are open',b:'Pay ₹1,000 per member before 31 March. Families in need can ask the coordinator for a waiver.',a:'Treasurer · 1 Nov',p:'Finance'},
+ {t:'Shubh Samachar: Vivah of Chi. Aarti Soni and Chi. Nikhil Joshi',b:'Reception on Sat 21 Nov, 7 pm, Jaipur. Blessings and contributions are welcome from the samaj.',a:'Jaipur coordinator · 30 Oct',p:'Shubh'},
+ {t:'Scholarship applications: last date 30 Nov',b:'Class 10 to graduation. Upload the marksheet in Community help.',a:'Education committee · 28 Oct',p:'Education'},
+ {t:'Condolence: Shri Hari Prasad Sharma (Sanganer)',b:'Prayer meeting on Tuesday 3 Nov, 4 to 5 pm at the family residence.',a:'Sanganer coordinator · 31 Oct',p:'Condolence'}];
+function evRow(e){return `<div class="item"><div class="date"><i>${e.m}</i><b>${e.d}</b></div><div style="flex:1"><div class="row" style="justify-content:flex-start;gap:8px"><b>${e.t}</b><span class="pill">${e.type}</span></div><p class="small muted">${e.when} · ${e.v}</p><p class="small muted">${e.c} · <span class="tn">${e.n+(S.rsvp.has(e.id)?1:0)}</span> attending</p></div><button class="btn sm ${S.rsvp.has(e.id)?'alt':''}" data-rsvp="${e.id}">${S.rsvp.has(e.id)?'Going ✓':'RSVP'}</button></div>`}
+function noRow(n){return `<div class="item"><span class="pill ${n.p==='Condolence'?'bad':n.p==='Finance'?'gold':n.p==='Shubh'?'good':''}">${n.p}</span><div><b>${n.t}</b><p class="small">${n.b}</p><p class="small muted">${n.a}</p></div></div>`}
+H.events=()=>`
+<div class="row"><div class="pagehead"><span class="lbl">Announcements</span><h1>Events &amp; notices</h1></div>${S.role>=1?'<button class="btn gold" data-toast="Opens the announcement composer (title, date, venue, chapter, send via app + WhatsApp)">+ New announcement</button>':''}</div>
+<div class="grid g2">
+ <section class="card"><h2 style="margin-bottom:12px">Upcoming functions</h2><div class="list">${EV.map(evRow).join('')}</div></section>
+ <section class="card"><h2 style="margin-bottom:12px">Notice board</h2><div class="list">${NO.map(noRow).join('')}</div>
+ <div class="card flat small" style="margin-top:12px">Each announcement can be sent to everyone, one chapter, or one village, and reaches members by app notice and WhatsApp.</div></section>
+</div>`;
+
+/* ---------- GALLERY ---------- */
+const MN=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const AL=[
+ ['Diwali Milan','2026-10-20','Jaipur',64],['Satyanarayan Katha','2026-09-08','Jaipur',112],['Annual General Meet','2026-03-15','Indore',148],['Holi Milan','2026-03-04','Surat',57],
+ ['Blood Donation Camp','2025-12-14','Sanganer',41],['Vivah Parichay Sammelan','2025-11-02','Jodhpur',203],['Sharad Purnima','2025-10-06','Pune',38],['Youth Cricket Cup','2025-04-20','Jaipur',96],['Annual General Meet','2025-03-16','Indore',131],
+ ['Diwali Milan','2024-11-01','Jaipur',72],['Mahila Sammelan','2024-08-11','Surat',84]];
+const hue=s=>{let h=0;for(const c of s)h=(h*31+c.charCodeAt(0))%360;return h};
+function cover(a,i){const h=hue(a[0]+a[1]);return `background:linear-gradient(135deg,hsl(${h} 45% 36%),hsl(${(h+50)%360} 50% 48%))`}
+H.gallery=()=>{
+ if(S.openAlbum!=null){const a=AL[S.openAlbum];const [y,m,d]=a[1].split('-');
+  return `<div class="row"><div class="pagehead"><button class="btn alt sm" data-album="-1" style="align-self:flex-start">← All albums</button><h1>${a[0]}</h1><p class="muted">${+d} ${MN[+m-1]} ${y} · ${a[2]} chapter · <span class="tn">${a[3]}</span> photos</p></div>${S.role>=1?'<button class="btn gold" data-toast="Coordinators drag in photos; they are compressed in the browser before upload to save storage">+ Add photos</button>':''}</div>
+  <div class="tiles">${Array.from({length:18},(_,i)=>`<div class="tile" style="background:linear-gradient(${120+i*17}deg,hsl(${hue(a[0])+i*9} 42% ${30+i%4*6}%),hsl(${hue(a[0])+i*9+60} 48% ${42+i%3*6}%))">${i===0?'Cover':'Photo '+(i+1)}</div>`).join('')}</div>
+  <div class="card flat small">Video of this event: <u>YouTube link (unlisted)</u> · Tagged families: Sharma, Joshi, Soni, +41</div>`}
+ const years=['All',...new Set(AL.map(a=>a[1].slice(0,4)))];
+ const list=AL.map((a,i)=>({a,i})).filter(({a})=>(S.gy==='All'||a[1].startsWith(S.gy))&&(S.gm==='All'||MN[+a[1].slice(5,7)-1]===S.gm));
+ const groups={};list.forEach(x=>{const k=x.a[1].slice(0,7);(groups[k]=groups[k]||[]).push(x)});
+ const out=Object.keys(groups).sort().reverse().map(k=>{const [y,m]=k.split('-');return `<div class="mh"><h2>${MN[+m-1]} ${y}</h2><span class="small muted">${groups[k].length} event${groups[k].length>1?'s':''}</span></div>
+  <div class="grid">${groups[k].sort((p,q)=>q.a[1].localeCompare(p.a[1])).map(({a,i})=>`<button class="album" data-album="${i}"><div class="cover" style="${cover(a)}">${a[1].slice(8)} ${MN[+m-1].slice(0,3)}</div><div class="meta"><b>${a[0]}</b><span class="small muted">${a[2]} · ${a[3]} photos</span></div></button>`).join('')}</div>`}).join('');
+ return `<div class="pagehead"><span class="lbl">Memories</span><h1>Gallery</h1><p class="muted">Albums belong to an event, so year, month and date come from the event itself.</p></div>
+ <div class="card row" style="justify-content:flex-start"><div><span class="lbl">Year</span><div class="chips" style="margin-top:4px">${years.map(y=>`<button class="chip" data-gy="${y}" aria-pressed="${S.gy===y}">${y}</button>`).join('')}</div></div>
+ <div class="field" style="min-width:160px"><label for="gm">Month</label><select id="gm"><option>All</option>${MN.map(m=>`<option ${S.gm===m?'selected':''}>${m}</option>`).join('')}</select></div></div>
+ ${out||'<div class="card muted">No albums for this year and month yet.</div>'}`};
+
+/* ---------- DIRECTORY ---------- */
+const PLACES={Rajasthan:{Jaipur:['Sanganer','Mansarovar','Jhotwara'],Jodhpur:['Mandore','Basni']},'Madhya Pradesh':{Indore:['Palasia','Rau']},Gujarat:{Surat:['Adajan','Varachha']}};
+const PP=[
+ ['Mahesh Sharma','M','Engineer','O+','Rajasthan','Jaipur','Sanganer'],['Kavita Sharma','F','Teacher','B+','Rajasthan','Jaipur','Sanganer'],['Suresh Sharma','M','Shop owner','A+','Rajasthan','Jaipur','Sanganer'],
+ ['Pooja Joshi','F','Doctor','O-','Rajasthan','Jaipur','Mansarovar'],['Deepak Soni','M','Jeweller','B+','Rajasthan','Jaipur','Jhotwara'],['Anil Gupta','M','CA','AB+','Madhya Pradesh','Indore','Palasia'],
+ ['Rekha Verma','F','Nurse','A+','Gujarat','Surat','Adajan'],['Karan Mehta','M','Student','O+','Rajasthan','Jodhpur','Mandore']];
+S.dq={q:'',s:'',d:'',v:''};
+H.directory=()=>{
+ const q=S.dq;const ds=q.s?Object.keys(PLACES[q.s]):[];const vs=q.d?PLACES[q.s][q.d]:[];
+ return `<div class="pagehead"><span class="lbl">Members only</span><h1>Member directory</h1><p class="muted">Browse by place. Phone numbers show only if the family allows it.</p></div>
+ <div class="card"><div class="form">
+  <div class="field"><label for="dq">Search name or profession</label><input id="dq" value="${q.q}" placeholder="e.g. Doctor"></div>
+  <div class="field"><label for="ds">State</label><select id="ds"><option value="">All</option>${Object.keys(PLACES).map(s=>`<option ${q.s===s?'selected':''}>${s}</option>`).join('')}</select></div>
+  <div class="field"><label for="dd">District</label><select id="dd" ${q.s?'':'disabled'}><option value="">All</option>${ds.map(s=>`<option ${q.d===s?'selected':''}>${s}</option>`).join('')}</select></div>
+  <div class="field"><label for="dv">Village / area</label><select id="dv" ${q.d?'':'disabled'}><option value="">All</option>${vs.map(s=>`<option ${q.v===s?'selected':''}>${s}</option>`).join('')}</select></div></div></div>
+ <div class="grid" id="dres">${dirCards()}</div>`};
+function dirCards(){const q=S.dq;const r=PP.filter(p=>(!q.q||(p[0]+p[2]).toLowerCase().includes(q.q.toLowerCase()))&&(!q.s||p[4]===q.s)&&(!q.d||p[5]===q.d)&&(!q.v||p[6]===q.v));
+ return r.map(p=>`<div class="card"><div class="item" style="padding:0;border:0"><div class="av ${p[1]==='F'?'f':''}">${p[0].split(' ').map(x=>x[0]).join('')}</div><div><b>${p[0]}</b><p class="small muted">${p[2]}</p><p class="small muted">${p[4]} › ${p[5]} › ${p[6]}</p></div></div>
+ <div class="row" style="margin-top:10px;justify-content:flex-start;gap:8px"><span class="pill bad">${p[3]}</span><button class="btn alt sm" data-go="tree">View family</button><span class="small muted">Phone hidden</span></div></div>`).join('')||'<div class="card muted">No members match these filters.</div>'}
+
+/* ---------- REGISTER ---------- */
+H.register=()=>`
+<div class="pagehead"><span class="lbl">New household</span><h1>Register your family</h1><p class="muted">One person registers the household and adds everyone in it. The local coordinator checks it before it goes live.</p></div>
+<div class="steps" id="steps"></div>
+<section class="card" id="p1"><h2 style="margin-bottom:12px">1. Household and place</h2><div class="form">
+ <div class="field"><label for="r1">Head of family</label><input id="r1" value="Mahesh Sharma"></div>
+ <div class="field"><label for="r2">Mobile (for login OTP)</label><input id="r2" inputmode="numeric" value="98xxxxxx10"></div>
+ <div class="field"><label for="r3">State</label><select id="r3"><option>Rajasthan</option><option>Madhya Pradesh</option><option>Gujarat</option></select></div>
+ <div class="field"><label for="r4">District</label><select id="r4"><option>Jaipur</option><option>Jodhpur</option></select></div>
+ <div class="field"><label for="r5">Village / area (decides your chapter)</label><select id="r5"><option>Sanganer</option><option>Mansarovar</option><option>Jhotwara</option></select></div>
+  <div class="field" style="grid-column:1/-1"><label for="r7">Home address</label><textarea id="r7" rows="2">14, Gopalpura Road, Sanganer, Jaipur</textarea></div></div>
+ <div class="row" style="margin-top:14px"><span class="small muted">Your chapter: <b>Sanganer</b> · Coordinator: Shri R. K. Verma</span><button class="btn" data-pstep="2">Next: add members</button></div></section>
+<section class="card" id="p2" hidden><h2 style="margin-bottom:12px">2. People in this household</h2>
+ <div class="tblwrap"><table><thead><tr><th>Name</th><th>Relation to head</th><th>Date of birth</th><th class="r"></th></tr></thead><tbody id="mrows"></tbody></table></div>
+ <div class="form" style="margin-top:14px;align-items:end">
+  <div class="field"><label for="m1">Name</label><input id="m1" placeholder="Full name"></div>
+  <div class="field"><label for="m2">Relation</label><select id="m2"><option>Son</option><option>Daughter</option><option>Father</option><option>Mother</option><option>Spouse</option><option>Other</option></select></div>
+  <div class="field"><label for="m3">Date of birth</label><input id="m3" type="date" value="2008-01-01"></div>
+  <button class="btn gold" data-addm>+ Add person</button></div>
+ <p class="small muted" style="margin-top:10px">Children and elders without a phone are managed by the head. Daughters who marry can be moved to the husband's household and stay linked to this tree.</p>
+ <div class="row" style="margin-top:14px"><button class="btn alt" data-pstep="1">Back</button><button class="btn" data-pstep="3">Next: review</button></div></section>
+<section class="card" id="p3" hidden><h2 style="margin-bottom:12px">3. Review and send</h2><div id="rev"></div>
+ <div class="toggle"><span>Show my phone number to members of my chapter</span><button class="sw" role="switch" aria-checked="false" data-sw="x" aria-label="Show phone"></button></div>
+ <div class="toggle"><span>I agree that the samaj may store this information and show it only to verified members</span><button class="sw" role="switch" aria-checked="true" data-sw="y" aria-label="Consent"></button></div>
+ <div class="row" style="margin-top:14px"><button class="btn alt" data-pstep="2">Back</button><button class="btn gold" data-submit>Send for approval</button></div></section>`;
+function regUpdate(){
+ const st=['Household','Members','Review'];$('#steps').innerHTML=st.map((s,i)=>`<div class="step ${S.pstep===i+1?'on':S.pstep>i+1?'done':''}">${i+1}. ${s}</div>`).join('');
+ [1,2,3].forEach(n=>$('#p'+n).hidden=S.pstep!==n);
+ $('#mrows').innerHTML=S.members.map((m,i)=>`<tr><td><b>${m.n}</b></td><td>${m.r}</td><td class="tn">${m.d}</td><td class="r">${i?`<button class="btn bad sm" data-delm="${i}">Remove</button>`:''}</td></tr>`).join('');
+ const n=S.members.length;$('#rev').innerHTML=`<div class="grid"><div class="card flat"><span class="lbl">Household</span><p><b>${$('#r1').value}</b></p><p class="small muted">${$('#r5').value}, ${$('#r4').value}, ${$('#r3').value}</p></div>
+ <div class="card flat"><span class="lbl">Members</span><p><b class="tn">${n}</b> people</p><p class="small muted">${S.members.map(m=>m.n.split(' ')[0]).join(', ')}</p></div>
+ <div class="card flat"><span class="lbl">Yearly dues</span><p><b class="tn">₹${(n*1000).toLocaleString('en-IN')}</b></p><p class="small muted">${n} × ₹1,000. Waiver can be requested.</p></div></div>`}
+
+/* ---------- TREE ---------- */
+const P={
+ ramesh:['Ramesh Sharma','1948','Grandfather · Sanganer'],sita:['Sita Devi','1951','Grandmother · Sanganer'],
+ mahesh:['Mahesh Sharma','1976','Engineer · you'],kavita:['Kavita Sharma','1979','Spouse · Teacher'],
+ suresh:['Suresh Sharma','1979','Shop owner · Sanganer'],neha:['Neha Sharma','1982','Spouse'],
+ pooja:['Pooja Joshi','1984','Doctor · now in Joshi household, Mansarovar'],vikram:['Vikram Joshi','1980','Spouse · Mansarovar'],
+ rohan:['Rohan','2008','Student · turns 18 on 6 Nov'],anaya:['Anaya','2012','Student'],aarav:['Aarav','2015','Student'],riya:['Riya Joshi','2014','Student']};
+const nd=(k,cls='')=>{const p=P[k];return `<button class="node ${cls}" data-p="${k}" aria-pressed="${S.tp===k}"><span class="av ${/Neha|Sita|Kavita|Pooja|Anaya|Riya/.test(p[0])?'f':''}">${p[0][0]}</span><span><b>${p[0]}</b><small>b. ${p[1]}</small></span></button>`};
+const cp=(a,b,c)=>`<div class="couple">${nd(a)}<span class="join"></span>${nd(b,c||'')}</div>`;
+S.tp='mahesh';
+H.tree=()=>`
+<div class="row"><div class="pagehead"><span class="lbl">Vansh vriksh</span><h1>Sharma family tree</h1><p class="muted">Four generations are drawn from links between parents, spouses and children. Tap anyone for details.</p></div>
+<div class="chips"><button class="chip" aria-pressed="true">4 generations</button><button class="chip" aria-pressed="false" data-toast="Shows all linked relatives, 7 generations">Full tree</button></div></div>
+<div class="card"><div class="tree"><ul><li>${cp('ramesh','sita')}<ul>
+ <li>${cp('mahesh','kavita')}<ul><li>${nd('rohan')}</li><li>${nd('anaya')}</li></ul></li>
+ <li>${cp('suresh','neha')}<ul><li>${nd('aarav')}</li></ul></li>
+ <li>${cp('pooja','vikram','out')}<ul><li>${nd('riya')}</li></ul></li></ul></li></ul></div>
+ <p class="small muted">Dashed card: Pooja and Vikram belong to the Joshi household for dues, and stay on this tree through her parents.</p></div>
+<div class="card" id="tdet"></div>`;
+function treeDet(){const p=P[S.tp];$('#tdet').innerHTML=`<div class="row"><div class="item" style="padding:0;border:0"><div class="av">${p[0][0]}</div><div><h2>${p[0]}</h2><p class="muted">Born ${p[1]} · ${p[2]}</p></div></div>
+ <div class="row" style="gap:8px"><button class="btn alt sm" data-toast="Add a child, spouse or parent to this person">+ Add relative</button><button class="btn alt sm" data-toast="Merge request sent to the chapter coordinator">Report duplicate</button></div></div>`}
+
+/* ---------- PAYMENTS ---------- */
+function qr(){let s=7,h='';const f=(r,c)=>{const t=(a,b)=>r>=a&&r<a+7&&c>=b&&c<b+7;const e=(a,b)=>{const y=r-a,x=c-b;return y>=0&&y<7&&x>=0&&x<7&&(y===0||y===6||x===0||x===6||(y>=2&&y<=4&&x>=2&&x<=4))};return e(0,0)||e(0,14)||e(14,0)};
+ for(let r=0;r<21;r++)for(let c=0;c<21;c++){s=(s*9301+49297)%233280;const fin=(r<8&&c<8)||(r<8&&c>12)||(r>12&&c<8);h+=`<i class="${fin?(f(r,c)?'k':''):(s/233280>.5?'k':'')}"></i>`}return h}
+H.payments=()=>`
+<div class="pagehead"><span class="lbl">FY 2026-27 · April to March</span><h1>Payments</h1></div>
+<div class="grid g2">
+ <section class="card stack"><div class="row"><h2>Sharma household</h2><span class="pill warn">₹4,000 due</span></div>
+  <div class="tblwrap"><table style="min-width:0"><tbody><tr><td>Annual dues</td><td class="tn">4 members × ₹1,000</td><td class="r tn">₹4,000</td></tr><tr><td>Waiver</td><td class="muted">None</td><td class="r tn">₹0</td></tr><tr><td>Paid so far</td><td class="muted">—</td><td class="r tn">₹0</td></tr><tr><td><b>Balance</b></td><td></td><td class="r tn"><b>₹4,000</b></td></tr></tbody></table></div>
+  <div class="chips"><button class="chip" aria-pressed="true">Pay in full</button><button class="chip" aria-pressed="false" data-toast="Pick 2 or 4 instalments; the treasurer is told">Instalments</button><button class="chip" aria-pressed="false" data-toast="Sends a waiver request to your coordinator">Request waiver</button></div></section>
+ <section class="card stack"><h2>Pay by UPI to the trust account</h2><div class="row" style="justify-content:flex-start;align-items:flex-start"><div class="qr">${qr()}</div>
+  <div class="stack" style="flex:1;min-width:200px"><div><span class="lbl">UPI ID</span><p><b>samajsetu@bank</b></p></div><div><span class="lbl">Reference to type</span><p><b>FAM-SNG-0142</b></p></div><p class="small muted">No gateway fee. Sample QR, not a real payment code.</p></div></div>
+  <div class="form"><div class="field"><label for="utr">UTR / transaction ID</label><input id="utr" placeholder="12-digit number from your UPI app"></div><div class="field"><label for="shot">Screenshot (optional)</label><input id="shot" type="file" accept="image/*"></div></div>
+  <button class="btn gold" data-toast="Sent. The Sanganer treasurer will confirm and you'll get a PDF receipt.">I have paid</button></section>
+</div>
+<section class="card stack"><div><span class="lbl">Voluntary · any amount</span><h2>Contribute on an occasion</h2><p class="small muted">For a marriage, a birth, moksh or any family occasion. The amount is entirely your choice. Suggestions are only a guide.</p></div>
+ <div class="field"><span class="small muted" style="font-weight:600">Occasion</span><div class="chips">${[['Marriage','विवाह'],['Baby born','जन्म'],['Moksh / antim sanskar','मोक्ष'],['Griha pravesh','गृह प्रवेश'],['Education or job success','सफलता'],['Other','अन्य']].map((o,i)=>`<button class="chip" data-occ="${o[0]}" aria-pressed="${i===0}">${o[0]} · ${o[1]}</button>`).join('')}</div></div>
+ <div class="form"><div class="field"><label for="camt">Amount (₹)</label><input id="camt" type="number" inputmode="numeric" value="1100" min="1"></div>
+  <div class="field"><label for="cfund">Goes to</label><select id="cfund"><option>Samaj general fund</option><option>Scholarship fund</option><option>Samaj Bhawan fund</option><option>My local chapter</option></select></div>
+  <div class="field"><label for="cname">In the name of the family</label><input id="cname" value="Sharma family"></div></div>
+ <div class="chips">${[501,1100,2100,5100,11000].map(a=>`<button class="chip" data-amt="${a}" aria-pressed="false">₹${a.toLocaleString('en-IN')}</button>`).join('')}</div>
+ <div><div class="field"><span class="small muted" style="font-weight:600">Who can see this contribution on the Shubh samachar board? Your choice.</span><div class="chips">${['Name and amount','Name only','Private (treasurer only)'].map((v,i)=>`<button class="chip" data-vis="1" aria-pressed="${i===1}">${v}</button>`).join('')}</div></div></div>
+ <div class="row"><span id="osum" class="tn"><b>Contribute ₹1,100 for Marriage</b></span><button class="btn gold" data-toast="Pay to the UPI ID above with the reference shown, then enter the UTR. The treasurer will confirm and send a receipt.">Pay and notify treasurer</button></div></section>
+<section class="card"><h2 style="margin-bottom:10px">Your payment history</h2><div class="tblwrap"><table><thead><tr><th>Receipt</th><th>Year</th><th>Mode</th><th>Status</th><th class="r">Amount</th></tr></thead><tbody>
+ <tr><td>A-1182</td><td>FY 2025-26</td><td>UPI</td><td><span class="pill good">Confirmed</span></td><td class="r tn">₹4,000</td></tr>
+ <tr><td>A-1240</td><td>Occasion · Marriage (Soni family)</td><td>UPI</td><td><span class="pill good">Confirmed</span></td><td class="r tn">₹1,100</td></tr>
+ <tr><td>A-0931</td><td>Diwali fund 2025</td><td>Cash</td><td><span class="pill good">Confirmed</span></td><td class="r tn">₹501</td></tr>
+ <tr><td>A-0640</td><td>FY 2024-25</td><td>UPI</td><td><span class="pill good">Confirmed</span></td><td class="r tn">₹3,000</td></tr></tbody></table></div></section>
+${S.role>=1?treas():''}`;
+function treas(){return `<div class="pagehead" style="margin-top:8px"><span class="lbl">Treasurer view</span><h1 style="font-size:1.5rem">Confirm and track money</h1></div>
+<div class="grid g2"><section class="card"><h2 style="margin-bottom:10px">Waiting for confirmation <span class="pill gold" id="pc">${S.pending.length}</span></h2><div class="list" id="plist">${S.pending.map((p,i)=>pRow(p,i)).join('')||'<p class="muted">All caught up.</p>'}</div></section>
+<section class="card"><h2 style="margin-bottom:10px">Collected this year</h2><div class="stack">${[['Jaipur',82,'₹1.9L'],['Indore',71,'₹1.4L'],['Surat',64,'₹0.9L'],['Pune',48,'₹0.5L'],['Jodhpur',39,'₹0.3L']].map(c=>`<div><div class="row" style="gap:8px"><span>${c[0]}</span><span class="tn small muted">${c[2]} · ${c[1]}%</span></div><div class="bar"><i style="width:${c[1]}%"></i></div></div>`).join('')}</div></section></div>
+<section class="card"><div class="row" style="margin-bottom:10px"><h2>Ledger · FY 2026-27</h2><button class="btn alt sm" data-toast="Exports a CSV for your CA and the annual report">Export for audit</button></div>
+<div class="grid" style="margin-bottom:12px"><div class="card flat stat"><span class="lbl">Income</span><b class="tn" style="color:var(--good)">₹4,82,500</b></div><div class="card flat stat"><span class="lbl">Spent</span><b class="tn" style="color:var(--bad)">₹2,17,300</b></div><div class="card flat stat"><span class="lbl">Balance</span><b class="tn">₹2,65,200</b></div></div>
+<div class="stack" style="margin-bottom:14px"><span class="lbl">Where the income came from</span>${[['Annual dues',352000,73],['Occasion contributions',78500,16],['Donations',52000,11]].map(c=>`<div><div class="row" style="gap:8px"><span>${c[0]}</span><span class="tn small muted">₹${c[1].toLocaleString('en-IN')} · ${c[2]}%</span></div><div class="bar ${c[0]==='Annual dues'?'':'gold'}"><i style="width:${c[2]}%"></i></div></div>`).join('')}</div>
+<div class="tblwrap"><table><thead><tr><th>Date</th><th>Entry</th><th>Chapter</th><th class="r">Amount</th></tr></thead><tbody>
+<tr><td class="tn">2 Nov</td><td>Occasion · Baby born (Verma family)</td><td>Surat</td><td class="r tn" style="color:var(--good)">+ ₹2,100</td></tr>
+<tr><td class="tn">2 Nov</td><td>Dues · Joshi household</td><td>Mansarovar</td><td class="r tn" style="color:var(--good)">+ ₹4,000</td></tr>
+<tr><td class="tn">30 Oct</td><td>Hall rent, Diwali Milan</td><td>Jaipur</td><td class="r tn" style="color:var(--bad)">− ₹18,000</td></tr>
+<tr><td class="tn">28 Oct</td><td>Donation · Shri B. L. Soni</td><td>Indore</td><td class="r tn" style="color:var(--good)">+ ₹11,000</td></tr>
+<tr><td class="tn">25 Oct</td><td>Scholarships paid (6 students)</td><td>Central</td><td class="r tn" style="color:var(--bad)">− ₹30,000</td></tr></tbody></table></div></section>`}
+function pRow(p,i){return `<div class="item"><div style="flex:1"><b>${p[0]}</b> <span class="small muted">· ${p[1]}</span><p class="small"><b class="tn">${p[2]}</b> · ${p[3]} · ${p[4]}</p></div><div class="chips"><button class="btn sm" data-ok="${i}">Confirm</button><button class="btn bad sm" data-no="${i}">Query</button></div></div>`}
+
+/* ---------- COMMUNITY ---------- */
+const CT={blood:'Blood donors',edu:'Scholarships',biz:'Business & jobs',vivah:'Vivah parichay',shubh:'Shubh samachar',obit:'Condolences'};
+function ctab(){switch(S.ctab){
+ case 'blood':return `<div class="chips" style="margin-bottom:12px">${['All','O+','O-','A+','B+','AB+'].map((b,i)=>`<button class="chip" aria-pressed="${i===0}">${b}</button>`).join('')}</div><div class="grid">${[['Mahesh Sharma','O+','Sanganer'],['Pooja Joshi','O-','Mansarovar'],['Karan Mehta','O+','Jodhpur'],['Rekha Verma','A+','Surat']].map(p=>`<div class="card flat row"><div><b>${p[0]}</b><p class="small muted">${p[2]} · available</p></div><span class="pill bad">${p[1]}</span></div>`).join('')}</div><p class="small muted" style="margin-top:10px">Only people who tick "I can donate" appear here.</p>`;
+ case 'edu':return `<div class="grid">${[['Class 10 to 12 merit','₹5,000','30 Nov'],['Engineering / medical','₹15,000','30 Nov'],['Girl child education','₹10,000','15 Dec']].map(s=>`<div class="card flat stack"><b>${s[0]}</b><p class="muted small">Up to <b class="tn">${s[1]}</b> · apply by ${s[2]}</p><button class="btn sm" data-toast="Opens the application with marksheet upload">Apply</button></div>`).join('')}</div>`;
+ case 'biz':return `<div class="grid">${[['Soni Jewellers','Jewellery · Jhotwara'],['Gupta &amp; Co.','Chartered accountant · Indore'],['Verma Clinic','General physician · Surat'],['Hiring: Sales executive','Posted by Mehta Traders · Jodhpur']].map(b=>`<div class="card flat"><b>${b[0]}</b><p class="small muted">${b[1]}</p></div>`).join('')}</div>`;
+ case 'vivah':return `<div class="card flat small" style="margin-bottom:12px">Opt-in only. Each profile is approved by a coordinator and visible only to verified families. Contact goes through the family head.</div><div class="grid">${[['Anaya S.','24 · M.Sc · Jaipur'],['Rahul M.','27 · Engineer · Pune'],['Isha V.','25 · CA · Surat']].map(b=>`<div class="card flat row"><div><b>${b[0]}</b><p class="small muted">${b[1]}</p></div><button class="btn alt sm" data-toast="Sends an interest request to the family head">Show interest</button></div>`).join('')}</div>`;
+ case 'shubh':return `<p class="small muted" style="margin-bottom:10px">Contributors choose whether their name and amount appear here.</p><div class="list">${[['Vivah: Chi. Aarti Soni &amp; Chi. Nikhil Joshi','Jaipur','21 Nov · reception 7 pm'],['Janm: baby girl born to Rekha &amp; Sunil Verma','Surat','2 Nov · blessings welcome'],['Griha pravesh: Shri Anil Gupta','Indore','8 Nov · 10 am']].map(o=>`<div class="item"><div class="av f">✦</div><div style="flex:1"><b>${o[0]}</b><p class="small muted">${o[1]} · ${o[2]}</p></div><button class="btn alt sm" data-go="payments">Send blessings</button></div>`).join('')}</div>`;
+ default:return `<div class="list">${[['Shri Hari Prasad Sharma','Sanganer','Prayer meeting 3 Nov, 4 pm'],['Smt. Lalita Devi Soni','Indore','Passed 24 Oct, aged 81'],['Shri K. L. Mehta','Jodhpur','Passed 12 Oct, aged 74']].map(o=>`<div class="item"><div class="av">🕯</div><div><b>${o[0]}</b><p class="small muted">${o[1]} · ${o[2]}</p></div></div>`).join('')}</div>`}}
+H.community=()=>`<div class="pagehead"><span class="lbl">Members helping members</span><h1>Community help</h1></div>
+<div class="card stack"><div class="tabs" role="tablist">${Object.entries(CT).map(([k,v])=>`<button role="tab" aria-selected="${S.ctab===k}" data-ctab="${k}">${v}</button>`).join('')}</div><div id="cbody">${ctab()}</div></div>`;
+
+/* ---------- ADMIN ---------- */
+H.admin=()=>`<div class="pagehead"><span class="lbl">Committee</span><h1>Admin</h1></div>
+<div class="grid g2"><section class="card"><h2 style="margin-bottom:10px">New registrations to verify <span class="pill gold" id="rc">${S.regq.length}</span></h2><div class="list" id="rlist">${S.regq.map((r,i)=>rRow(r,i)).join('')||'<p class="muted">Nothing waiting.</p>'}</div></section>
+<section class="card"><h2 style="margin-bottom:6px">Privacy rules</h2>
+ <div class="toggle"><span>Portal visible to verified members only</span><button class="sw" role="switch" aria-checked="${S.sw.a}" data-sw="a" aria-label="Members only"></button></div>
+ <div class="toggle"><span>Hide phone numbers by default</span><button class="sw" role="switch" aria-checked="${S.sw.b}" data-sw="b" aria-label="Hide phones"></button></div>
+ <div class="toggle"><span>Coordinators see only their own chapter</span><button class="sw" role="switch" aria-checked="${S.sw.d}" data-sw="d" aria-label="Scope"></button></div>
+ <div class="toggle"><span>Allow outsiders to see public events</span><button class="sw" role="switch" aria-checked="${S.sw.c}" data-sw="c" aria-label="Public events"></button></div></section></div>
+<section class="card"><div class="row" style="margin-bottom:10px"><h2>Chapters by place</h2><button class="btn alt sm" data-toast="Add a chapter under a state, district or village">+ New chapter</button></div><div class="tblwrap"><table><thead><tr><th>Chapter</th><th>Coordinator</th><th>Treasurer</th><th class="r">Households</th><th class="r">Dues</th></tr></thead><tbody>
+${[['Jaipur','R. K. Verma','S. Joshi',412,82],['Indore','A. Gupta','M. Soni',286,71],['Surat','P. Mehta','N. Shah',198,64],['Pune','V. Rathore','—',117,48],['Jodhpur','K. Mehta','D. Soni',96,39]].map(c=>`<tr><td><b>${c[0]}</b></td><td>${c[1]}</td><td>${c[2]}</td><td class="r tn">${c[3]}</td><td class="r"><span class="pill ${c[4]>70?'good':c[4]>50?'gold':'warn'}">${c[4]}%</span></td></tr>`).join('')}</tbody></table></div></section>
+<section class="card"><div class="row" style="margin-bottom:10px"><h2>Types of money received</h2><button class="btn alt sm" data-toast="Add a new occasion or fund">+ Add type</button></div><div class="tblwrap"><table><thead><tr><th>Type</th><th>How it works</th><th class="r">Suggested</th><th>Shown on board</th></tr></thead><tbody>
+${[['Annual dues','Fixed, per member, April to March','₹1,000 each','No'],['Marriage','Voluntary, from the family or well-wishers','₹1,100','Yes'],['Baby born','Voluntary','₹501','Yes'],['Moksh / antim sanskar','Voluntary, shown with respect','₹1,100','Yes'],['Griha pravesh, success','Voluntary','₹501','Yes'],['Donation to a fund','Scholarship, Bhawan, general','Any','If donor agrees']].map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td class="r tn">${r[2]}</td><td><span class="pill ${r[3]==='No'?'':'good'}">${r[3]==='No'?'No':"Contributor's choice"}</span></td></tr>`).join('')}</tbody></table></div></section>
+<div class="grid g2"><section class="card"><h2 style="margin-bottom:10px">Roles</h2><div class="list">${[['Central admin','Everything, all chapters'],['Chapter coordinator','Approves families, posts notices, uploads photos for own chapter'],['Treasurer','Confirms payments, keeps ledger'],['Family head','Edits own household and tree'],['Member','Views directory, events, gallery']].map(r=>`<div class="item"><div><b>${r[0]}</b><p class="small muted">${r[1]}</p></div></div>`).join('')}</div></section>
+<section class="card"><h2 style="margin-bottom:10px">Recent activity</h2><div class="list small">${[['R. K. Verma approved Deepak Soni','Today 10:42'],['S. Joshi confirmed ₹4,000 from Joshi household','Today 09:15'],['A. Gupta added 48 photos to Holi Milan','Yesterday'],['Central admin changed Indore treasurer','31 Oct']].map(a=>`<div class="item"><div style="flex:1">${a[0]}</div><span class="muted tn">${a[1]}</span></div>`).join('')}</div></section></div>`;
+function rRow(r,i){return `<div class="item"><div style="flex:1"><b>${r[0]}</b><p class="small muted">${r[1]} chapter · ${r[2]} · ${r[3]}</p></div><div class="chips"><button class="btn sm" data-rok="${i}">Approve</button><button class="btn bad sm" data-rno="${i}">Reject</button></div></div>`}
+
+S.occ='Marriage';
+function occSum(){const e=$('#osum');if(e)e.innerHTML='<b>Contribute ₹'+(+$('#camt').value||0).toLocaleString('en-IN')+' for '+S.occ+'</b>'}
+/* ---------- ROUTER ---------- */
+function render(){
+  if(!H[S.view]||(S.view==='admin'&&S.role<1))S.view='home';
+  nav();$('#main').innerHTML=H[S.view]();
+  if(S.view==='register')regUpdate();
+  if(S.view==='tree')treeDet();
+  try{history.replaceState(null,'','#'+S.view)}catch(e){}
+}
+function go(v){S.view=v;S.openAlbum=null;render();window.scrollTo({top:0})}
+document.addEventListener('click',e=>{
+  const t=e.target.closest('button');if(!t)return;const d=t.dataset;
+  if(d.go)return go(d.go);
+  if(d.occ){document.querySelectorAll('[data-occ]').forEach(b=>b.setAttribute('aria-pressed',b===t));S.occ=d.occ;return occSum()}
+  if(d.amt){$('#camt').value=d.amt;return occSum()}
+  if(d.vis){document.querySelectorAll('[data-vis]').forEach(b=>b.setAttribute('aria-pressed',b===t));return}
+  if(d.toast)return toast(d.toast);
+  if(d.rsvp){const id=+d.rsvp;S.rsvp.has(id)?S.rsvp.delete(id):S.rsvp.add(id);toast(S.rsvp.has(id)?'You are marked as attending':'RSVP removed');return render()}
+  if(d.gy){S.gy=d.gy;return render()}
+  if(d.album!==undefined){S.openAlbum=+d.album<0?null:+d.album;render();return window.scrollTo({top:0})}
+  if(d.pstep){S.pstep=+d.pstep;return regUpdate()}
+  if(d.addm!==undefined){const n=$('#m1').value.trim();if(!n)return toast('Enter the person\'s name first');S.members.push({n:n+' Sharma',r:$('#m2').value,d:$('#m3').value});$('#m1').value='';return regUpdate()}
+  if(d.delm){S.members.splice(+d.delm,1);return regUpdate()}
+  if(d.submit!==undefined)return toast('Sent to the Sanganer coordinator. You will get a message on approval.');
+  if(d.p){S.tp=d.p;document.querySelectorAll('.node').forEach(n=>n.setAttribute('aria-pressed',n.dataset.p===S.tp));return treeDet()}
+  if(d.ok!==undefined||d.no!==undefined){const i=+(d.ok??d.no);const p=S.pending[i];S.pending.splice(i,1);toast(d.ok!==undefined?'Confirmed. Receipt sent to '+p[0]:'Query sent to '+p[0]);return render()}
+  if(d.rok!==undefined||d.rno!==undefined){const i=+(d.rok??d.rno);const r=S.regq[i];S.regq.splice(i,1);toast(d.rok!==undefined?r[0]+' is now a verified member':'Registration returned to '+r[0]);return render()}
+  if(d.ctab){S.ctab=d.ctab;return render()}
+  if(d.sw){if(d.sw==='x'||d.sw==='y'){t.setAttribute('aria-checked',t.getAttribute('aria-checked')!=='true');return}S.sw[d.sw]=!S.sw[d.sw];return render()}
+});
+document.addEventListener('input',e=>{
+  const id=e.target.id;
+  if(id==='dq'){S.dq.q=e.target.value;$('#dres').innerHTML=dirCards()}
+  if(id==='camt')occSum();
+});
+document.addEventListener('change',e=>{
+  const id=e.target.id;
+  if(id==='gm'){S.gm=e.target.value;render()}
+  if(id==='ds'){S.dq.s=e.target.value;S.dq.d='';S.dq.v='';render()}
+  if(id==='dd'){S.dq.d=e.target.value;S.dq.v='';render()}
+  if(id==='dv'){S.dq.v=e.target.value;render()}
+  if(id==='role'){S.role=+e.target.value;render()}
+});
+/* Hindi labels are applied over the English text so both languages stay in one source. */
+const HI={
+'Shri Dasha Vaishnav Porwad Samaj':'श्री दशा वैष्णव पोरवाड़ समाज','Jaipur chapter · FY 2026-27':'जयपुर शाखा · वित्त वर्ष 2026-27','Viewing as':'देखने की भूमिका','Member':'सदस्य','Treasurer':'कोषाध्यक्ष','Central admin':'केंद्रीय प्रबंधक','Theme':'थीम',
+'Sample data for design review. Names, amounts and photos are placeholders.':'डिज़ाइन समीक्षा के लिए नमूना जानकारी। नाम, राशि और फोटो काल्पनिक हैं।',
+'Your family at a glance':'आपके परिवार की झलक','Coming up':'आगामी कार्यक्रम','Notice board':'सूचना पट','All events':'सभी कार्यक्रम','All notices':'सभी सूचनाएँ','This week in the family':'इस सप्ताह परिवार में','Needs your attention':'आपके ध्यान के लिए',
+'Households':'परिवार','Members':'सदस्य','Dues collected':'एकत्रित शुल्क','Next gathering':'अगला आयोजन','Pay by UPI':'UPI से भुगतान करें','Ask for instalments':'किश्तों में भुगतान','Contribute for an occasion':'अवसर पर सहयोग दें',
+'Announcements':'घोषणाएँ','Events & notices':'कार्यक्रम व सूचनाएँ','Upcoming functions':'आगामी आयोजन','+ New announcement':'+ नई घोषणा','RSVP':'उपस्थिति बताएँ','Going ✓':'आ रहे हैं ✓',
+'Memories':'यादें','Gallery':'गैलरी','Year':'वर्ष','Month':'माह','All':'सभी','← All albums':'← सभी एल्बम','+ Add photos':'+ फोटो जोड़ें',
+'Members only':'केवल सदस्यों के लिए','Member directory':'सदस्य निर्देशिका','Search name or profession':'नाम या व्यवसाय खोजें','State':'राज्य','District':'जिला','Village / area':'गाँव / क्षेत्र','View family':'परिवार देखें','Phone hidden':'फोन छिपा है',
+'New household':'नया परिवार','Register your family':'अपने परिवार का पंजीकरण करें','1. Household and place':'1. परिवार और स्थान','2. People in this household':'2. परिवार के सदस्य','3. Review and send':'3. जाँचें और भेजें','Head of family':'परिवार के मुखिया','Mobile (for login OTP)':'मोबाइल (लॉगिन OTP के लिए)','Village / area (decides your chapter)':'गाँव / क्षेत्र (इससे शाखा तय होती है)','Home address':'घर का पता','Next: add members':'आगे: सदस्य जोड़ें','Back':'पीछे','Next: review':'आगे: जाँचें','Name':'नाम','Relation to head':'मुखिया से संबंध','Date of birth':'जन्म तिथि','Relation':'संबंध','+ Add person':'+ सदस्य जोड़ें','Send for approval':'स्वीकृति के लिए भेजें','Remove':'हटाएँ','Household':'परिवार','Yearly dues':'वार्षिक शुल्क','1. Household':'1. परिवार','2. Members':'2. सदस्य','3. Review':'3. जाँच',
+'Vansh vriksh':'वंश वृक्ष','Sharma family tree':'शर्मा परिवार का वंश वृक्ष','4 generations':'4 पीढ़ियाँ','Full tree':'पूरा वृक्ष','+ Add relative':'+ रिश्तेदार जोड़ें','Report duplicate':'दोहराव बताएँ',
+'Payments':'भुगतान','Pay by UPI to the trust account':'ट्रस्ट खाते में UPI से भुगतान','UPI ID':'UPI आईडी','Reference to type':'लिखने के लिए संदर्भ','UTR / transaction ID':'UTR / लेन-देन संख्या','Screenshot (optional)':'स्क्रीनशॉट (वैकल्पिक)','I have paid':'मैंने भुगतान कर दिया','Your payment history':'आपके भुगतान का विवरण','Pay in full':'पूरा भुगतान','Instalments':'किश्तें','Request waiver':'छूट का अनुरोध','Annual dues':'वार्षिक शुल्क','Waiver':'छूट','Paid so far':'अब तक भुगतान','Balance':'शेष',
+'Voluntary · any amount':'स्वैच्छिक · कोई भी राशि','Contribute on an occasion':'अवसर पर सहयोग','Occasion':'अवसर','Amount (₹)':'राशि (₹)','Goes to':'किस कोष में','In the name of the family':'परिवार के नाम से','Pay and notify treasurer':'भुगतान करें और कोषाध्यक्ष को सूचित करें','Who can see this contribution on the Shubh samachar board? Your choice.':'शुभ समाचार पट पर यह सहयोग कौन देख सके? आपकी पसंद।','Name and amount':'नाम और राशि','Name only':'केवल नाम','Private (treasurer only)':'गोपनीय (केवल कोषाध्यक्ष)','Samaj general fund':'समाज सामान्य कोष','Scholarship fund':'छात्रवृत्ति कोष','Samaj Bhawan fund':'समाज भवन कोष','My local chapter':'मेरी स्थानीय शाखा',
+'Treasurer view':'कोषाध्यक्ष दृश्य','Confirm and track money':'भुगतान की पुष्टि व हिसाब','Waiting for confirmation':'पुष्टि की प्रतीक्षा में','Collected this year':'इस वर्ष एकत्रित','Confirm':'पुष्टि करें','Query':'पूछताछ','Export for audit':'ऑडिट के लिए निर्यात','Income':'आय','Spent':'खर्च','Where the income came from':'आय के स्रोत','Occasion contributions':'अवसर पर सहयोग','Donations':'दान','Date':'दिनांक','Entry':'विवरण','Chapter':'शाखा','Amount':'राशि','Ledger · FY 2026-27':'खाता बही · वित्त वर्ष 2026-27',
+'Members helping members':'सदस्य, सदस्यों के साथ','Community help':'समाज सहयोग','Blood donors':'रक्तदाता','Scholarships':'छात्रवृत्ति','Business & jobs':'व्यापार व रोजगार','Vivah parichay':'विवाह परिचय','Shubh samachar':'शुभ समाचार','Condolences':'शोक सूचना','Apply':'आवेदन करें','Show interest':'रुचि दिखाएँ','Send blessings':'आशीर्वाद भेजें','Contributors choose whether their name and amount appear here.':'सहयोग देने वाले स्वयं तय करते हैं कि उनका नाम और राशि यहाँ दिखे या नहीं।',
+'Committee':'समिति','Admin':'प्रबंधन','New registrations to verify':'सत्यापन के लिए नए पंजीकरण','Privacy rules':'गोपनीयता नियम','Approve':'स्वीकृत करें','Reject':'अस्वीकार करें','Chapters by place':'स्थान अनुसार शाखाएँ','+ New chapter':'+ नई शाखा','Coordinator':'संयोजक','Dues':'शुल्क','Types of money received':'प्राप्त राशि के प्रकार','+ Add type':'+ प्रकार जोड़ें','Type':'प्रकार','How it works':'कैसे काम करता है','Suggested':'सुझाई गई राशि','Shown on board':'सूचना पट पर','Roles':'भूमिकाएँ','Recent activity':'हाल की गतिविधि',"Contributor's choice":'सहयोगकर्ता की पसंद','No':'नहीं',
+'Portal visible to verified members only':'पोर्टल केवल सत्यापित सदस्यों को दिखे','Hide phone numbers by default':'फोन नंबर पहले से छिपे रहें','Coordinators see only their own chapter':'संयोजक केवल अपनी शाखा देखें','Allow outsiders to see public events':'बाहरी लोग सार्वजनिक कार्यक्रम देख सकें'};
+const orig=new WeakMap();let obs;
+function tr(){
+  if(!obs)obs=new MutationObserver(()=>tr());
+  obs.disconnect();
+  const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let n;
+  while((n=w.nextNode())){
+    if(n.parentNode.closest('script,style'))continue;
+    let o=orig.get(n);if(o===undefined){o=n.data;orig.set(n,o)}
+    const t=o.trim(),h=S.hi&&HI[t];
+    const v=h?o.replace(t,h):o;if(n.data!==v)n.data=v;
+  }
+  obs.observe(document.body,{childList:true,subtree:true});
+}
+$('#lang').onclick=()=>{S.hi=!S.hi;$('#lang').textContent=S.hi?'English':'हिन्दी';render();tr()};
+$('#theme').onclick=()=>{const r=document.documentElement;const dark=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;r.dataset.theme=dark?'light':'dark'};
+const h0=location.hash.slice(1);if(H[h0])S.view=h0;
+render();tr();
+</script>

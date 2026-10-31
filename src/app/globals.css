@@ -1,0 +1,70 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #eef3f3; --surface: #ffffff; --surface2: #f5f9f9; --ink: #12262b; --muted: #54696d; --line: #d6e0e1; --line2: #b9c9cb;
+  --brand: #0d4a50; --brand-ink: #ffffff; --brand-soft: #d9eceb; --accent: #e29a14; --accent-ink: #2b1c00; --accent-soft: #fbeccb;
+  --good: #1c7a4a; --good-soft: #d9f0e3; --warn: #9a5b00; --warn-soft: #fdeccc; --bad: #b2352a; --bad-soft: #fadcd8;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0c1719; --surface: #142427; --surface2: #1a2d30; --ink: #e6f0f0; --muted: #97adb0; --line: #26393c; --line2: #38504f;
+    --brand: #6fc7c0; --brand-ink: #052a2a; --brand-soft: #17383a; --accent: #f0b13c; --accent-ink: #2b1c00; --accent-soft: #3a2d10;
+    --good: #5cc78c; --good-soft: #143a28; --warn: #f0b13c; --warn-soft: #3a2d10; --bad: #f08a7e; --bad-soft: #40201c;
+    color-scheme: dark;
+  }
+}
+
+body { @apply bg-bg font-body text-ink antialiased; font-size: 15px; line-height: 1.5; }
+h1 { @apply font-display text-[1.7rem] leading-tight md:text-[2.1rem]; font-weight: 400; text-wrap: balance; }
+h2 { @apply text-[1.05rem] font-bold; text-wrap: balance; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+@layer components {
+  .card { @apply min-w-0 rounded-xl border border-line bg-surface p-4 sm:p-5; }
+  .card-flat { @apply min-w-0 rounded-xl border border-line bg-surface2 p-4; }
+  .lbl { @apply text-[0.74rem] font-semibold uppercase tracking-wider text-muted; }
+  .btn { @apply inline-flex cursor-pointer items-center justify-center gap-1 rounded-lg border-0 bg-brand px-4 py-2 font-semibold text-brand-ink disabled:opacity-50; }
+  .btn-alt { @apply btn border border-line2 bg-surface text-ink; }
+  .btn-gold { @apply btn bg-accent text-accent-ink; }
+  .btn-bad { @apply btn bg-bad-soft text-bad; }
+  .btn-sm { @apply px-3 py-1 text-[0.85rem]; }
+  .pill { @apply inline-block rounded-full bg-brand-soft px-2.5 py-0.5 text-[0.74rem] font-semibold text-brand; }
+  .pill-good { @apply pill bg-good-soft text-good; }
+  .pill-warn { @apply pill bg-warn-soft text-warn; }
+  .pill-bad { @apply pill bg-bad-soft text-bad; }
+  .input { @apply w-full min-w-0 rounded-lg border border-line2 bg-surface px-3 py-2 text-ink; }
+  .field { @apply flex min-w-0 flex-col gap-1; }
+  .field > label, .field > .flabel { @apply text-[0.8rem] font-semibold text-muted; }
+  .form-grid { @apply grid gap-3 sm:grid-cols-2; }
+  .grid-auto { @apply grid gap-4 sm:grid-cols-2 lg:grid-cols-3; }
+  .tbl { @apply w-full min-w-[520px] border-collapse; }
+  .tbl th { @apply border-b border-line2 px-2.5 py-2 text-left text-[0.74rem] font-semibold uppercase tracking-wider text-muted; }
+  .tbl td { @apply border-b border-line px-2.5 py-2.5 align-middle; }
+  .bar { @apply h-2 overflow-hidden rounded-full bg-line; }
+  .bar > i { @apply block h-full rounded-full bg-brand; }
+  .chip { @apply cursor-pointer rounded-full border border-line2 bg-surface px-3 py-1 text-[0.88rem]; }
+  .chip[aria-pressed='true'], .chip-on { @apply border-brand bg-brand text-brand-ink; }
+}
+
+/* family tree */
+.tree { overflow-x: auto; padding: 8px 4px 16px; }
+.tree ul { display: flex; justify-content: center; padding: 20px 0 0; margin: 0; position: relative; width: max-content; min-width: 100%; }
+.tree ul ul::before { content: ''; position: absolute; top: 0; left: 50%; border-left: 1px solid var(--line2); height: 20px; }
+.tree li { list-style: none; text-align: center; position: relative; padding: 20px 8px 0; }
+.tree li::before, .tree li::after { content: ''; position: absolute; top: 0; right: 50%; width: 50%; height: 20px; border-top: 1px solid var(--line2); }
+.tree li::after { right: auto; left: 50%; border-left: 1px solid var(--line2); }
+.tree li:only-child::before, .tree li:only-child::after { display: none; }
+.tree li:only-child { padding-top: 0; }
+.tree li:first-child::before, .tree li:last-child::after { border: 0 none; }
+.tree li:last-child::before { border-right: 1px solid var(--line2); border-radius: 0 6px 0 0; }
+.tree li:first-child::after { border-radius: 6px 0 0 0; }
+.tree > ul { padding-top: 0; }
+.tree > ul > li { padding-top: 0; }
+.tree > ul > li::before, .tree > ul > li::after { display: none; }
+
+@media print {
+  .no-print { display: none !important; }
+  body { background: #fff; color: #000; }
+}
