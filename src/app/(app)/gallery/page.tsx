@@ -1,8 +1,7 @@
 import Link from 'next/link';
 import { requireMember } from '@/lib/ctx';
-import { createAlbum } from './actions';
-import { Empty, Flash, PageHead, Field } from '@/components/ui';
-import { Submit } from '@/components/submit';
+import { Empty, Flash, PageHead } from '@/components/ui';
+import { Icon } from '@/components/icon';
 import { fmtDate, monthName } from '@/lib/utils';
 
 export default async function GalleryPage({ searchParams }: { searchParams: Promise<{ y?: string; m?: string; ok?: string; err?: string }> }) {
@@ -28,15 +27,14 @@ export default async function GalleryPage({ searchParams }: { searchParams: Prom
   }
   const groups = new Map<string, typeof shown>();
   shown.forEach((a) => groups.set(a.event_date.slice(0, 7), [...(groups.get(a.event_date.slice(0, 7)) ?? []), a]));
-  const [{ data: chapters }, { data: events }] = c.canPost
-    ? await Promise.all([sb.from('chapters').select('id,name').order('name'), sb.from('events').select('id,title,starts_at').order('starts_at', { ascending: false }).limit(30)])
-    : [{ data: [] }, { data: [] }];
 
   const href = (yy: string, mm: number) => `/gallery?${new URLSearchParams({ ...(yy ? { y: yy } : {}), ...(mm >= 0 ? { m: String(mm) } : {}) })}`;
 
   return (
     <>
-      <PageHead kicker={t('Memories', 'यादें')} title={t('Gallery', 'गैलरी')} sub={t('Albums belong to an event, so year, month and date come from the event itself.', 'एल्बम किसी कार्यक्रम का होता है, इसलिए वर्ष, माह और तारीख कार्यक्रम से ही मिलते हैं।')} />
+      <PageHead kicker={t('Memories', 'यादें')} title={t('Gallery', 'गैलरी')} sub={t('Find photos by year and month.', 'वर्ष और माह के अनुसार फोटो खोजें।')}>
+        {c.canPost && <Link href="/admin/gallery" className="btn-gold btn btn-sm"><Icon name="plus" className="h-4 w-4" />{t('New album', 'नया एल्बम')}</Link>}
+      </PageHead>
       <Flash ok={sp.ok} err={sp.err} />
       <div className="card flex flex-wrap items-start gap-x-8 gap-y-3">
         <div><span className="lbl">{t('Year', 'वर्ष')}</span>
@@ -71,25 +69,6 @@ export default async function GalleryPage({ searchParams }: { searchParams: Prom
           </div>
         </section>
       ))}
-      {c.canPost && (
-        <form action={createAlbum} className="card flex flex-col gap-3">
-          <h2>{t('Create an album', 'नया एल्बम बनाएँ')}</h2>
-          <div className="form-grid">
-            <Field label={t('Album title', 'एल्बम का शीर्षक')}><input name="title" required className="input" /></Field>
-            <Field label={t('Event date', 'कार्यक्रम की तारीख')}><input name="event_date" type="date" required className="input" /></Field>
-            <Field label={t('Linked event (optional)', 'जुड़ा कार्यक्रम (वैकल्पिक)')}>
-              <select name="event_id" className="input" defaultValue=""><option value="">—</option>{(events ?? []).map((e) => <option key={e.id} value={e.id}>{fmtDate(e.starts_at, lang)} · {e.title}</option>)}</select>
-            </Field>
-            {c.isAdmin && (
-              <Field label={t('Chapter', 'शाखा')}>
-                <select name="chapter" className="input" defaultValue="all"><option value="all">{t('All chapters', 'सभी शाखाएँ')}</option>{(chapters ?? []).map((ch) => <option key={ch.id} value={ch.id}>{ch.name}</option>)}</select>
-              </Field>
-            )}
-            <Field label={t('YouTube link for video (optional)', 'वीडियो का YouTube लिंक (वैकल्पिक)')}><input name="video_url" type="url" className="input" /></Field>
-          </div>
-          <div><Submit className="btn-gold">{t('Create and add photos', 'बनाएँ और फोटो जोड़ें')}</Submit></div>
-        </form>
-      )}
     </>
   );
 }

@@ -33,6 +33,10 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
         {t('New family?', 'नया परिवार?')}{' '}
         <Link href="/signup" className="font-semibold text-brand underline">{t('Create an account', 'खाता बनाएँ')}</Link>
       </p>
+      <p className="border-t border-line pt-3 text-sm text-muted">
+        {t('Committee member?', 'समिति के सदस्य?')}{' '}
+        <Link href="/admin/login" className="font-semibold text-brand underline">{t('Admin sign-in', 'प्रबंधक साइन इन')}</Link>
+      </p>
     </AuthShell>
   );
 }

@@ -8,35 +8,30 @@ Next.js 15 on Vercel, Supabase (Postgres, login, private file storage). Runs on 
 ### 1. Supabase (free)
 1. Create a project at supabase.com (choose a region near India, e.g. Mumbai).
 2. SQL Editor > New query > paste `supabase/schema.sql` > Run.
-3. New query > paste `supabase/seed.sql` (edit the chapters first) > Run.
-4. Project Settings > API: copy the **Project URL** and the **anon public key**.
-5. Authentication > Providers > Email: for a small pilot you can switch off "Confirm email" so people can sign in at once.
-   Leave it on if you prefer verified emails.
+   *Already ran an older version?* Run `supabase/updates/002_admin_setup.sql` instead (adds the settings table and the first-admin setup).
+3. Project Settings > API: copy the **Project URL** and the **anon public key**.
+4. Authentication > Providers > Email: for a small pilot you can switch off "Confirm email" so people can sign in at once.
 
 ### 2. Vercel
-1. Push this folder to a GitHub repository (private is fine).
-2. vercel.com > Add New > Project > import the repository. Framework: Next.js (automatic).
-3. Environment variables (Settings > Environment Variables):
+1. Import the GitHub repository in Vercel (Framework: Next.js, automatic).
+2. Environment variables:
    - `NEXT_PUBLIC_SUPABASE_URL`
    - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-   - `NEXT_PUBLIC_UPI_ID` (the trust's UPI ID)
-   - `NEXT_PUBLIC_UPI_NAME` (name shown in the UPI app)
-4. Deploy. Copy the live URL.
+   - `ADMIN_SETUP_CODE` (optional, recommended): a secret word that the first admin must type. Stops a stranger from claiming admin.
+3. Deploy, copy the live URL.
 
 ### 3. Tell Supabase the live URL
-Authentication > URL Configuration:
-- Site URL: your Vercel URL
-- Redirect URLs: add `https://YOUR-URL/auth/callback`
+Authentication > URL Configuration: Site URL = your Vercel URL; Redirect URLs: add `https://YOUR-URL/auth/callback`.
 
-### 4. Make yourself the first admin
-Open the live site, sign up, then run in the Supabase SQL Editor:
+### 4. Open the admin console (no SQL needed)
+Go to `https://YOUR-URL/admin/login`. While no admin exists it shows **Set up the portal**. Create the first admin account there.
+The Overview page then gives a checklist:
+1. **Places (chapters)**: add your cities or villages.
+2. **Settings**: yearly fee per member and the trust UPI ID.
+3. **People & roles**: after a coordinator and a treasurer sign up normally, give them their role and place.
+4. **Announcements**: post the first event.
 
-```sql
-update public.profiles set role = 'admin' where email = 'YOUR-EMAIL@example.com';
-```
-
-Then in the portal: **Admin > Chapters** (add places), **Finance** (set the yearly fee), **Admin > Roles**
-(make a coordinator and treasurer for each chapter).
+Families use the normal site (`/`). Admins, coordinators and treasurers use `/admin`.
 
 ## Roles
 | Role | Can do |
@@ -44,7 +39,7 @@ Then in the portal: **Admin > Chapters** (add places), **Finance** (set the year
 | Member | See directory, events, gallery; manage own family; pay dues; contribute |
 | Coordinator | Approve families of own chapter, post events and notices, upload photos, approve listings |
 | Treasurer | Confirm payments, record cash, expenses, dues status of own chapter |
-| Admin | Everything, all chapters, roles, fees, scholarships |
+| Admin | Everything, all places, roles, fee, UPI ID, scholarships |
 
 ## Privacy
 Rules are enforced in the database (row level security), not only in the pages:

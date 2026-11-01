@@ -1,13 +1,6 @@
 import { initials } from '@/lib/utils';
 
-export function Flash({ ok, err }: { ok?: string; err?: string }) {
-  if (!ok && !err) return null;
-  return (
-    <div role="status" className={`rounded-lg border px-4 py-2.5 font-semibold ${err ? 'border-bad bg-bad-soft text-bad' : 'border-good bg-good-soft text-good'}`}>
-      {err || ok}
-    </div>
-  );
-}
+export { Flash } from './flash';
 
 export function PageHead({ kicker, title, sub, children }: { kicker?: string; title: string; sub?: string; children?: React.ReactNode }) {
   return (

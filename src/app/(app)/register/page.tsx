@@ -3,6 +3,7 @@ import { getCtx } from '@/lib/ctx';
 import { registerHousehold } from './actions';
 import { Flash, PageHead, Field } from '@/components/ui';
 import { Submit } from '@/components/submit';
+import { PlacePicker } from '@/components/place-picker';
 import { BLOOD } from '@/lib/utils';
 
 export default async function RegisterPage({ searchParams }: { searchParams: Promise<{ err?: string }> }) {
@@ -11,8 +12,6 @@ export default async function RegisterPage({ searchParams }: { searchParams: Pro
   const { t } = c;
   if (c.household) redirect('/family');
   const { data: chapters, error: chaptersError } = await c.sb.from('chapters').select('id,name,state,district,area').order('state').order('district').order('area');
-  const byState = new Map<string, typeof chapters>();
-  (chapters ?? []).forEach((ch) => byState.set(ch.state, [...(byState.get(ch.state) ?? []), ch]));
 
   return (
     <>
@@ -36,16 +35,7 @@ export default async function RegisterPage({ searchParams }: { searchParams: Pro
             <Field label={t('Mobile number', 'मोबाइल नंबर')}>
               <input name="phone" inputMode="tel" className="input" />
             </Field>
-            <Field label={t('Your place (decides your chapter)', 'आपका स्थान (इससे शाखा तय होती है)')}>
-              <select name="chapter" required className="input" defaultValue="">
-                <option value="" disabled>{t('Choose…', 'चुनें…')}</option>
-                {[...byState.entries()].map(([state, list]) => (
-                  <optgroup key={state} label={state}>
-                    {(list ?? []).map((ch) => <option key={ch.id} value={ch.id}>{ch.district} › {ch.area}</option>)}
-                  </optgroup>
-                ))}
-              </select>
-            </Field>
+            <PlacePicker chapters={chapters ?? []} labels={{ state: t('State', 'राज्य'), district: t('District', 'जिला'), area: t('Village / area', 'गाँव / क्षेत्र'), choose: t('Choose…', 'चुनें…') }} />
             <Field label={t('Gender', 'लिंग')}>
               <select name="gender" className="input" defaultValue="M">
                 <option value="M">{t('Male', 'पुरुष')}</option>

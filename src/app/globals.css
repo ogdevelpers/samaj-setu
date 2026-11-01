@@ -22,19 +22,20 @@ h2 { @apply text-[1.05rem] font-bold; text-wrap: balance; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 @layer components {
-  .card { @apply min-w-0 rounded-xl border border-line bg-surface p-4 sm:p-5; }
-  .card-flat { @apply min-w-0 rounded-xl border border-line bg-surface2 p-4; }
+  .card { @apply min-w-0 rounded-2xl border border-line bg-surface p-4 shadow-[0_1px_2px_rgba(18,38,43,0.04)] sm:p-5; }
+  .card-flat { @apply min-w-0 rounded-2xl border border-line bg-surface2 p-4; }
+  .card-link { @apply card transition hover:-translate-y-0.5 hover:border-brand hover:shadow-md; }
   .lbl { @apply text-[0.74rem] font-semibold uppercase tracking-wider text-muted; }
-  .btn { @apply inline-flex cursor-pointer items-center justify-center gap-1 rounded-lg border-0 bg-brand px-4 py-2 font-semibold text-brand-ink disabled:opacity-50; }
+  .btn { @apply inline-flex min-h-[44px] cursor-pointer items-center justify-center gap-1.5 rounded-xl border-0 bg-brand px-4 py-2 font-semibold text-brand-ink transition active:scale-[0.98] disabled:cursor-wait disabled:opacity-60; }
   .btn-alt { @apply btn border border-line2 bg-surface text-ink; }
   .btn-gold { @apply btn bg-accent text-accent-ink; }
   .btn-bad { @apply btn bg-bad-soft text-bad; }
-  .btn-sm { @apply px-3 py-1 text-[0.85rem]; }
+  .btn-sm { @apply min-h-[36px] px-3 py-1 text-[0.85rem]; }
   .pill { @apply inline-block rounded-full bg-brand-soft px-2.5 py-0.5 text-[0.74rem] font-semibold text-brand; }
   .pill-good { @apply pill bg-good-soft text-good; }
   .pill-warn { @apply pill bg-warn-soft text-warn; }
   .pill-bad { @apply pill bg-bad-soft text-bad; }
-  .input { @apply w-full min-w-0 rounded-lg border border-line2 bg-surface px-3 py-2 text-ink; }
+  .input { @apply min-h-[44px] w-full min-w-0 rounded-xl border border-line2 bg-surface px-3 py-2 text-ink transition focus:border-brand; }
   .field { @apply flex min-w-0 flex-col gap-1; }
   .field > label, .field > .flabel { @apply text-[0.8rem] font-semibold text-muted; }
   .form-grid { @apply grid gap-3 sm:grid-cols-2; }
@@ -44,7 +45,7 @@ h2 { @apply text-[1.05rem] font-bold; text-wrap: balance; }
   .tbl td { @apply border-b border-line px-2.5 py-2.5 align-middle; }
   .bar { @apply h-2 overflow-hidden rounded-full bg-line; }
   .bar > i { @apply block h-full rounded-full bg-brand; }
-  .chip { @apply cursor-pointer rounded-full border border-line2 bg-surface px-3 py-1 text-[0.88rem]; }
+  .chip { @apply inline-flex min-h-[36px] cursor-pointer items-center rounded-full border border-line2 bg-surface px-3.5 py-1 text-[0.9rem] transition hover:border-brand; }
   .chip[aria-pressed='true'], .chip-on { @apply border-brand bg-brand text-brand-ink; }
 }
 
@@ -68,3 +69,11 @@ h2 { @apply text-[1.05rem] font-bold; text-wrap: balance; }
   .no-print { display: none !important; }
   body { background: #fff; color: #000; }
 }
+
+@layer utilities {
+  .skeleton { @apply animate-pulse rounded-2xl bg-line; }
+  .safe-bottom { padding-bottom: env(safe-area-inset-bottom, 0px); }
+}
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.rise { animation: rise .25s ease-out both; }
+@media (prefers-reduced-motion: reduce) { .rise { animation: none; } .skeleton { animation: none; } * { transition: none !important; } }

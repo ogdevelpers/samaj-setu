@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { requireMember } from '@/lib/ctx';
 import { Empty, PageHead } from '@/components/ui';
+import { TreeZoom } from '@/components/tree-zoom';
 import { initials } from '@/lib/utils';
 
 type P = { id: string; full_name: string; gender: string | null; dob: string | null; deceased: boolean; father_id: string | null; mother_id: string | null; spouse_id: string | null; household_id: string };
@@ -89,9 +90,11 @@ export default async function TreePage() {
         <Empty>{t('Add your spouse, children and parents in My family to grow the tree.', 'वृक्ष बढ़ाने के लिए मेरा परिवार में जीवनसाथी, बच्चे और माता-पिता जोड़ें।')}</Empty>
       ) : (
         <div className="card">
-          {roots.map((r) => (
-            <div key={r.id} className="tree"><ul><Branch p={r} depth={0} /></ul></div>
-          ))}
+          <TreeZoom labels={{ in: t('Zoom in', 'बड़ा करें'), out: t('Zoom out', 'छोटा करें'), reset: t('Reset', 'रीसेट') }}>
+            {roots.map((r) => (
+              <div key={r.id} className="tree"><ul><Branch p={r} depth={0} /></ul></div>
+            ))}
+          </TreeZoom>
         </div>
       )}
     </>

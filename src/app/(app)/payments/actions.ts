@@ -10,7 +10,7 @@ export async function submitPayment(fd: FormData) {
   if (!c.household) redirect('/register');
   const kind = ['dues', 'occasion', 'donation'].includes(str(fd.get('kind'))) ? str(fd.get('kind')) : 'dues';
   const amount = Number(str(fd.get('amount')));
-  const back = (k: 'ok' | 'err', m: string) => redirect(`/payments?${k}=${encodeURIComponent(m)}${kind === 'dues' ? '' : '#occasion'}`);
+  const back = (k: 'ok' | 'err', m: string) => redirect(`/payments?${k}=${encodeURIComponent(m)}${kind === 'dues' ? '' : '&tab=occasion'}`);
   if (!(amount > 0)) back('err', t('Enter the amount you paid.', 'भुगतान की गई राशि लिखें।'));
   const utr = strOrNull(fd.get('utr'));
   const shot = strOrNull(fd.get('screenshot'));

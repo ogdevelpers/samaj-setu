@@ -1,12 +1,12 @@
-import { requireRole } from '@/lib/ctx';
-import { addExpense, confirmPayment, deleteExpense, recordPayment, rejectPayment, setFee } from './actions';
+import { requireStaff } from '@/lib/ctx';
+import { addExpense, confirmPayment, deleteExpense, recordPayment, rejectPayment } from '../actions';
 import { Empty, Flash, PageHead, Field } from '@/components/ui';
 import { Submit } from '@/components/submit';
 import { OCCASIONS, currentFy, fmtDate, inr } from '@/lib/utils';
 
-export default async function FinancePage({ searchParams }: { searchParams: Promise<{ ok?: string; err?: string }> }) {
+export default async function Finance({ searchParams }: { searchParams: Promise<{ ok?: string; err?: string }> }) {
   const sp = await searchParams;
-  const c = await requireRole((x) => x.isAdmin || x.isTreasurer);
+  const c = await requireStaff(['admin', 'treasurer']);
   const { t, lang, sb } = c;
   const fy = currentFy();
   const y = Number(fy.slice(0, 4));
@@ -43,22 +43,10 @@ export default async function FinancePage({ searchParams }: { searchParams: Prom
 
   return (
     <>
-      <PageHead kicker={`${t('Treasurer', 'कोषाध्यक्ष')} · ${fy}`} title={t('Finance', 'वित्त')}>
-        <a href={`/finance/export?fy=${fy}`} className="btn-alt btn btn-sm">{t('Export for audit (CSV)', 'ऑडिट के लिए निर्यात (CSV)')}</a>
+      <PageHead kicker={`${t('Money', 'धन')} · ${fy}`} title={t('Finance', 'वित्त')}>
+        <a href={`/admin/finance/export?fy=${fy}`} className="btn-alt btn btn-sm">{t('Export for audit (CSV)', 'ऑडिट के लिए निर्यात (CSV)')}</a>
       </PageHead>
       <Flash ok={sp.ok} err={sp.err} />
-
-      <div className="grid-auto">
-        <div className="card"><span className="lbl">{t('Income', 'आय')}</span><b className="block font-display text-3xl font-normal tabular-nums text-good">{inr(income)}</b></div>
-        <div className="card"><span className="lbl">{t('Spent', 'खर्च')}</span><b className="block font-display text-3xl font-normal tabular-nums text-bad">{inr(s.expenses)}</b></div>
-        <div className="card"><span className="lbl">{t('Balance', 'शेष')}</span><b className="block font-display text-3xl font-normal tabular-nums">{inr(income - Number(s.expenses))}</b></div>
-      </div>
-      <section className="card flex flex-col gap-3">
-        <h2>{t('Where the income came from', 'आय के स्रोत')}</h2>
-        {[[t('Annual dues', 'वार्षिक शुल्क'), s.income_dues], [t('Occasion contributions', 'अवसर पर सहयोग'), s.income_occasion], [t('Donations', 'दान'), s.income_donation]].map(([k, v]) => (
-          <div key={String(k)}><div className="flex justify-between gap-2"><span>{k}</span><span className="tabular-nums text-sm text-muted">{inr(v as number)}</span></div><div className="bar"><i style={{ width: `${income ? (Number(v) / income) * 100 : 0}%` }} /></div></div>
-        ))}
-      </section>
 
       <section className="card flex flex-col gap-3">
         <h2>{t('Waiting for confirmation', 'पुष्टि की प्रतीक्षा में')} <span className="pill-warn">{(pending ?? []).length}</span></h2>
@@ -72,11 +60,17 @@ export default async function FinancePage({ searchParams }: { searchParams: Prom
             </div>
             <div className="flex flex-wrap items-center gap-2">
               <form action={confirmPayment}><input type="hidden" name="id" value={p.id} /><Submit className="btn btn-sm">{t('Confirm', 'पुष्टि करें')}</Submit></form>
-              <form action={rejectPayment} className="flex gap-1"><input type="hidden" name="id" value={p.id} /><input name="note" placeholder={t('Reason', 'कारण')} className="input !w-32 !py-1" aria-label="Reason" /><Submit className="btn-bad btn btn-sm">{t('Return', 'लौटाएँ')}</Submit></form>
+              <form action={rejectPayment} className="flex gap-1"><input type="hidden" name="id" value={p.id} /><input name="note" placeholder={t('Reason', 'कारण')} className="input !min-h-9 !w-32 !py-1" aria-label="Reason" /><Submit className="btn-bad btn btn-sm">{t('Return', 'लौटाएँ')}</Submit></form>
             </div>
           </div>
         ))}
       </section>
+
+      <div className="grid gap-4 sm:grid-cols-3">
+        <div className="card"><span className="lbl">{t('Income', 'आय')}</span><b className="block font-display text-3xl font-normal tabular-nums text-good">{inr(income)}</b></div>
+        <div className="card"><span className="lbl">{t('Spent', 'खर्च')}</span><b className="block font-display text-3xl font-normal tabular-nums text-bad">{inr(s.expenses)}</b></div>
+        <div className="card"><span className="lbl">{t('Balance', 'शेष')}</span><b className="block font-display text-3xl font-normal tabular-nums">{inr(income - Number(s.expenses))}</b></div>
+      </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
         <form action={recordPayment} className="card flex flex-col gap-3">
@@ -86,7 +80,7 @@ export default async function FinancePage({ searchParams }: { searchParams: Prom
           </Field>
           <div className="form-grid">
             <Field label={t('For', 'किसलिए')}><select name="kind" className="input"><option value="dues">{t('Annual dues', 'वार्षिक शुल्क')}</option><option value="occasion">{t('Occasion', 'अवसर')}</option><option value="donation">{t('Donation', 'दान')}</option></select></Field>
-            <Field label={t('Occasion (if any)', 'अवसर (यदि हो)')}><select name="occasion" className="input" defaultValue="">{<option value="">—</option>}{OCCASIONS.map((o) => <option key={o.key} value={o.key}>{lang === 'hi' ? o.hi : o.en}</option>)}</select></Field>
+            <Field label={t('Occasion (if any)', 'अवसर (यदि हो)')}><select name="occasion" className="input" defaultValue=""><option value="">—</option>{OCCASIONS.map((o) => <option key={o.key} value={o.key}>{lang === 'hi' ? o.hi : o.en}</option>)}</select></Field>
             <Field label={t('Amount (₹)', 'राशि (₹)')}><input name="amount" type="number" min="1" required className="input" /></Field>
             <Field label={t('Mode', 'माध्यम')}><select name="mode" className="input"><option value="cash">{t('Cash', 'नकद')}</option><option value="bank">{t('Bank transfer', 'बैंक ट्रांसफर')}</option></select></Field>
             <Field label={t('Receipt book / reference', 'रसीद बुक / संदर्भ')}><input name="ref" className="input" /></Field>
@@ -96,26 +90,23 @@ export default async function FinancePage({ searchParams }: { searchParams: Prom
         </form>
 
         <section className="card flex flex-col gap-3">
-          <h2>{t('Collection by chapter', 'शाखा अनुसार वसूली')}</h2>
+          <h2>{t('Collection by place', 'स्थान अनुसार वसूली')}</h2>
           {[...byChapter.values()].length === 0 && <Empty>{t('No approved families yet.', 'अभी कोई स्वीकृत परिवार नहीं।')}</Empty>}
           {[...byChapter.values()].map((ch) => {
             const pct = ch.total ? Math.round((ch.paid / ch.total) * 100) : 0;
             return <div key={ch.name}><div className="flex justify-between gap-2"><span>{ch.name}</span><span className="tabular-nums text-sm text-muted">{inr(ch.paid)} / {inr(ch.total)} · {pct}%</span></div><div className="bar"><i style={{ width: `${pct}%` }} /></div></div>;
           })}
-          {c.isAdmin && (
-            <form action={setFee} className="mt-2 flex flex-wrap items-end gap-2 border-t border-line pt-3">
-              <input type="hidden" name="fy" value={fy} />
-              <Field label={`${t('Yearly fee per member', 'प्रति सदस्य वार्षिक शुल्क')} (${fy})`}><input name="per_member" type="number" min="0" defaultValue={perMember || 1000} className="input !w-32" /></Field>
-              <Submit className="btn-alt">{t('Save fee', 'शुल्क सहेजें')}</Submit>
-            </form>
-          )}
+          <h2 className="mt-2">{t('Where the income came from', 'आय के स्रोत')}</h2>
+          {[[t('Annual dues', 'वार्षिक शुल्क'), s.income_dues], [t('Occasion contributions', 'अवसर पर सहयोग'), s.income_occasion], [t('Donations', 'दान'), s.income_donation]].map(([k, v]) => (
+            <div key={String(k)}><div className="flex justify-between gap-2"><span>{k}</span><span className="tabular-nums text-sm text-muted">{inr(v as number)}</span></div><div className="bar"><i style={{ width: `${income ? (Number(v) / income) * 100 : 0}%` }} /></div></div>
+          ))}
         </section>
       </div>
 
       <section className="card flex flex-col gap-3">
         <h2>{t('Families with dues pending', 'जिन परिवारों का शुल्क शेष है')} <span className="pill-warn">{unpaid.length}</span></h2>
-        {unpaid.length === 0 ? <Empty>{perMember ? t('Everyone has paid.', 'सभी ने जमा कर दिया है।') : t('Set the yearly fee to see dues.', 'शुल्क देखने के लिए वार्षिक शुल्क तय करें।')}</Empty> : (
-          <div className="overflow-x-auto"><table className="tbl"><thead><tr><th>{t('Family', 'परिवार')}</th><th>{t('Chapter', 'शाखा')}</th><th className="text-right">{t('Members', 'सदस्य')}</th><th className="text-right">{t('Balance', 'शेष')}</th><th /></tr></thead><tbody>
+        {unpaid.length === 0 ? <Empty>{perMember ? t('Everyone has paid.', 'सभी ने जमा कर दिया है।') : t('Set the yearly fee in Settings to see dues.', 'शुल्क देखने के लिए सेटिंग में वार्षिक शुल्क तय करें।')}</Empty> : (
+          <div className="overflow-x-auto"><table className="tbl"><thead><tr><th>{t('Family', 'परिवार')}</th><th>{t('Place', 'स्थान')}</th><th className="text-right">{t('Members', 'सदस्य')}</th><th className="text-right">{t('Balance', 'शेष')}</th><th /></tr></thead><tbody>
             {unpaid.slice(0, 150).map((r) => (
               <tr key={r.id}><td><b>{r.head_name}</b></td><td>{r.chapter?.name}</td><td className="text-right tabular-nums">{r.members}</td><td className="text-right tabular-nums">{inr(r.balance)}</td>
                 <td className="text-right">{r.phone ? <a className="btn-alt btn btn-sm" href={remind(r)} target="_blank" rel="noreferrer">{t('Remind on WhatsApp', 'WhatsApp पर याद दिलाएँ')}</a> : <span className="text-sm text-muted">{t('no phone', 'फोन नहीं')}</span>}</td></tr>
@@ -131,11 +122,11 @@ export default async function FinancePage({ searchParams }: { searchParams: Prom
           <Field label={t('Amount (₹)', 'राशि (₹)')}><input name="amount" type="number" min="1" required className="input" /></Field>
           <Field label={t('Date', 'दिनांक')}><input name="spent_on" type="date" defaultValue={new Date().toISOString().slice(0, 10)} className="input" /></Field>
           <Field label={t('Category', 'श्रेणी')}><select name="category" className="input">{['hall', 'food', 'scholarship', 'printing', 'travel', 'general'].map((k) => <option key={k}>{k}</option>)}</select></Field>
-          {c.isAdmin && <Field label={t('Chapter', 'शाखा')}><select name="chapter" className="input" defaultValue="all"><option value="all">{t('Central', 'केंद्रीय')}</option>{(chapters ?? []).map((ch) => <option key={ch.id} value={ch.id}>{ch.name}</option>)}</select></Field>}
+          {c.isAdmin && <Field label={t('Place', 'स्थान')}><select name="chapter" className="input" defaultValue="all"><option value="all">{t('Central', 'केंद्रीय')}</option>{(chapters ?? []).map((ch) => <option key={ch.id} value={ch.id}>{ch.name}</option>)}</select></Field>}
           <div className="flex items-end"><Submit className="btn-gold">{t('Add expense', 'खर्च जोड़ें')}</Submit></div>
         </form>
         {(expenses ?? []).length > 0 && (
-          <div className="overflow-x-auto"><table className="tbl"><thead><tr><th>{t('Date', 'दिनांक')}</th><th>{t('Entry', 'विवरण')}</th><th>{t('Chapter', 'शाखा')}</th><th className="text-right">{t('Amount', 'राशि')}</th><th /></tr></thead><tbody>
+          <div className="overflow-x-auto"><table className="tbl"><thead><tr><th>{t('Date', 'दिनांक')}</th><th>{t('Entry', 'विवरण')}</th><th>{t('Place', 'स्थान')}</th><th className="text-right">{t('Amount', 'राशि')}</th><th /></tr></thead><tbody>
             {(expenses ?? []).map((e: any) => (
               <tr key={e.id}><td>{fmtDate(e.spent_on, lang)}</td><td>{e.description} <span className="text-sm text-muted">· {e.category}</span></td><td>{e.chapter?.name ?? t('Central', 'केंद्रीय')}</td><td className="text-right tabular-nums text-bad">− {inr(e.amount)}</td>
                 <td className="text-right"><form action={deleteExpense}><input type="hidden" name="id" value={e.id} /><Submit className="btn-bad btn btn-sm">✕</Submit></form></td></tr>

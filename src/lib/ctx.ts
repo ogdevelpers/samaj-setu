@@ -43,3 +43,10 @@ export async function requireRole(check: (c: Ctx) => boolean) {
   if (!check(ctx)) redirect('/');
   return ctx;
 }
+
+/** Admin console pages. Members are sent back to the member app. */
+export async function requireStaff(allow: string[] = ['admin', 'coordinator', 'treasurer']) {
+  const ctx = await getCtx();
+  if (!allow.includes(ctx.role)) redirect(ctx.isStaff ? '/admin' : '/');
+  return ctx;
+}

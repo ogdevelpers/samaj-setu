@@ -5,6 +5,7 @@ import { deleteAlbum, deletePhoto } from '../actions';
 import { Empty, PageHead } from '@/components/ui';
 import { Submit } from '@/components/submit';
 import { PhotoUploader } from '@/components/photo-uploader';
+import { Lightbox } from '@/components/lightbox';
 import { fmtDate } from '@/lib/utils';
 
 export default async function AlbumPage({ params }: { params: Promise<{ id: string }> }) {
@@ -37,21 +38,12 @@ export default async function AlbumPage({ params }: { params: Promise<{ id: stri
       {(photos ?? []).length === 0 ? (
         <Empty>{t('No photos yet.', 'अभी कोई फोटो नहीं।')}</Empty>
       ) : (
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-          {(photos ?? []).map((p) => (
-            <div key={p.id} className="relative">
-              <a href={urls.get(p.path)} target="_blank" rel="noreferrer">
-                <img src={urls.get(p.thumb_path)} alt="" loading="lazy" className="aspect-[4/3] w-full rounded-lg border border-line object-cover" />
-              </a>
-              {canEdit && (
-                <form action={deletePhoto} className="absolute right-1 top-1">
-                  <input type="hidden" name="id" value={p.id} />
-                  <button className="rounded-md bg-bad-soft px-2 py-0.5 text-xs font-bold text-bad" aria-label="Delete photo">✕</button>
-                </form>
-              )}
-            </div>
-          ))}
-        </div>
+        <Lightbox closeLabel={t('Close', 'बंद करें')} photos={(photos ?? []).map((p) => ({
+          id: p.id, thumb: urls.get(p.thumb_path) ?? '', full: urls.get(p.path) ?? '',
+          remove: canEdit ? (
+            <form action={deletePhoto}><input type="hidden" name="id" value={p.id} /><button className="rounded-md bg-bad-soft px-2 py-0.5 text-xs font-bold text-bad" aria-label="Delete photo">✕</button></form>
+          ) : undefined,
+        }))} />
       )}
     </>
   );

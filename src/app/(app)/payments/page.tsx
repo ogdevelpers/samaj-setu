@@ -3,117 +3,106 @@ import QRCode from 'qrcode';
 import { redirect } from 'next/navigation';
 import { requireMember } from '@/lib/ctx';
 import { submitPayment } from './actions';
-import { Empty, Flash, PageHead, Field } from '@/components/ui';
-import { Submit } from '@/components/submit';
-import { ShotInput } from '@/components/shot-input';
+import { Empty, Flash, PageHead } from '@/components/ui';
+import { PayForms } from '@/components/pay-forms';
+import { CopyButton } from '@/components/copy-button';
+import { Icon } from '@/components/icon';
 import { householdDues } from '@/lib/dues';
+import { getSettings } from '@/lib/settings';
 import { FUNDS, OCCASIONS, fmtDate, inr } from '@/lib/utils';
 
-export default async function PaymentsPage({ searchParams }: { searchParams: Promise<{ ok?: string; err?: string; occasion?: string; amount?: string }> }) {
+export default async function PaymentsPage({ searchParams }: { searchParams: Promise<{ ok?: string; err?: string; tab?: string }> }) {
   const sp = await searchParams;
   const c = await requireMember();
   const { t, lang, sb } = c;
-  if (!c.household) redirect('/finance');
+  if (!c.household) redirect('/admin');
   const hid = c.household.id as string;
-  const dues = await householdDues(sb, hid, c.household.waiver_amount);
-  const { data: history } = await sb.from('payments').select('*').eq('household_id', hid).order('created_at', { ascending: false });
-  const upi = process.env.NEXT_PUBLIC_UPI_ID ?? '';
-  const upiName = process.env.NEXT_PUBLIC_UPI_NAME ?? 'Samaj';
+  const [dues, { data: history }, cfg] = await Promise.all([
+    householdDues(sb, hid, c.household.waiver_amount),
+    sb.from('payments').select('*').eq('household_id', hid).order('created_at', { ascending: false }),
+    getSettings(sb),
+  ]);
   const ref = 'FAM-' + hid.slice(0, 6).toUpperCase();
   let qr = '';
-  if (upi) {
-    const link = `upi://pay?pa=${encodeURIComponent(upi)}&pn=${encodeURIComponent(upiName)}&cu=INR&tn=${encodeURIComponent(ref)}${dues.balance > 0 ? `&am=${dues.balance}` : ''}`;
-    qr = await QRCode.toString(link, { type: 'svg', margin: 1, width: 180 });
+  let upiLink = '';
+  if (cfg.upi_id) {
+    upiLink = `upi://pay?pa=${encodeURIComponent(cfg.upi_id)}&pn=${encodeURIComponent(cfg.upi_name)}&cu=INR&tn=${encodeURIComponent(ref)}${dues.balance > 0 ? `&am=${dues.balance}` : ''}`;
+    qr = await QRCode.toString(upiLink, { type: 'svg', margin: 1, width: 180 });
   }
-  const occ = OCCASIONS.find((o) => o.key === sp.occasion) ?? OCCASIONS[0];
-  const occAmount = sp.amount && Number(sp.amount) > 0 ? sp.amount : String(occ.amount);
   const statusPill = (s: string) => (s === 'confirmed' ? <span className="pill-good">{t('Confirmed', 'पुष्ट')}</span> : s === 'pending' ? <span className="pill-warn">{t('Waiting', 'प्रतीक्षा में')}</span> : <span className="pill-bad">{t('Returned', 'लौटाया')}</span>);
   const kindLabel = (p: any) => (p.kind === 'dues' ? `${t('Annual dues', 'वार्षिक शुल्क')} ${p.fy}` : p.kind === 'occasion' ? `${t('Occasion', 'अवसर')} · ${p.occasion ?? ''}` : t('Donation', 'दान'));
+  const L = {
+    tabDues: t('Annual dues', 'वार्षिक शुल्क'), tabOccasion: t('Occasion / donation', 'अवसर / दान'),
+    duesHelp: t('Pay by UPI first, then tell us here so the treasurer can match it. You may pay in parts.', 'पहले UPI से भुगतान करें, फिर यहाँ बताएँ ताकि कोषाध्यक्ष मिलान कर सकें। आप हिस्सों में भी दे सकते हैं।'),
+    occHelp: t('For a marriage, a birth, moksh or any family occasion. The amount is entirely your choice.', 'विवाह, जन्म, मोक्ष या किसी भी पारिवारिक अवसर के लिए। राशि पूरी तरह आपकी इच्छा है।'),
+    full: t('Full balance', 'पूरा शेष'), amount: t('Amount paid (₹)', 'जमा राशि (₹)'), utr: t('UTR / transaction ID', 'UTR / लेन-देन संख्या'), utrHint: t('12 digits in your UPI app', 'UPI ऐप में 12 अंक'),
+    shot: t('Screenshot (optional)', 'स्क्रीनशॉट (वैकल्पिक)'), attached: t('Attached ✓', 'जुड़ गया ✓'), send: t('Send to treasurer', 'कोषाध्यक्ष को भेजें'),
+    donation: t('Donation', 'दान'), fund: t('Goes to', 'किस कोष में'), familyName: t('In the name of', 'किसके नाम से'),
+    whoSees: t('Who can see this on the Shubh samachar board? Your choice.', 'शुभ समाचार पट पर इसे कौन देख सके? आपकी पसंद।'),
+    visAmount: t('Name and amount', 'नाम और राशि'), visName: t('Name only', 'केवल नाम'), visPrivate: t('Private (treasurer only)', 'गोपनीय (केवल कोषाध्यक्ष)'),
+  };
 
   return (
     <>
       <PageHead kicker={`${t('FY', 'वित्त वर्ष')} ${dues.fy} · ${t('April to March', 'अप्रैल से मार्च')}`} title={t('Payments', 'भुगतान')} />
       <Flash ok={sp.ok} err={sp.err} />
+
       <div className="grid gap-4 lg:grid-cols-2">
         <section className="card flex flex-col gap-3">
-          <div className="flex flex-wrap items-center justify-between gap-2"><h2>{c.household.head_name}</h2>
-            {dues.balance > 0 ? <span className="pill-warn">{inr(dues.balance)} {t('due', 'देय')}</span> : <span className="pill-good">{t('Paid', 'जमा')}</span>}</div>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <h2>{c.household.head_name}</h2>
+            {dues.balance > 0 ? <span className="pill-warn">{inr(dues.balance)} {t('due', 'देय')}</span> : <span className="pill-good">{t('Paid', 'जमा')}</span>}
+          </div>
           {!dues.feeSet ? <p className="text-muted">{t('The yearly fee has not been set yet. The admin will set it soon.', 'वार्षिक शुल्क अभी तय नहीं हुआ है। प्रबंधक शीघ्र तय करेंगे।')}</p> : (
-            <div className="overflow-x-auto"><table className="tbl !min-w-0"><tbody>
-              <tr><td>{t('Annual dues', 'वार्षिक शुल्क')}</td><td className="tabular-nums text-muted">{dues.members} × {inr(dues.perMember)}</td><td className="text-right tabular-nums">{inr(dues.members * dues.perMember)}</td></tr>
-              <tr><td>{t('Waiver', 'छूट')}</td><td /><td className="text-right tabular-nums">− {inr(c.household.waiver_amount)}</td></tr>
-              <tr><td>{t('Paid so far', 'अब तक भुगतान')}</td><td className="text-muted">{dues.pending > 0 ? `+ ${inr(dues.pending)} ${t('waiting', 'प्रतीक्षा में')}` : ''}</td><td className="text-right tabular-nums">{inr(dues.paid)}</td></tr>
-              <tr><td><b>{t('Balance', 'शेष')}</b></td><td /><td className="text-right tabular-nums"><b>{inr(dues.balance)}</b></td></tr>
-            </tbody></table></div>
+            <>
+              <div className="bar !h-3"><i style={{ width: `${dues.total ? Math.min(100, (dues.paid / dues.total) * 100) : 100}%` }} /></div>
+              <table className="w-full"><tbody className="[&_td]:py-1.5">
+                <tr><td>{t('Annual dues', 'वार्षिक शुल्क')} <span className="text-muted">({dues.members} × {inr(dues.perMember)})</span></td><td className="text-right tabular-nums">{inr(dues.members * dues.perMember)}</td></tr>
+                {Number(c.household.waiver_amount) > 0 && <tr><td>{t('Waiver', 'छूट')}</td><td className="text-right tabular-nums">− {inr(c.household.waiver_amount)}</td></tr>}
+                <tr><td>{t('Paid so far', 'अब तक जमा')}{dues.pending > 0 && <span className="text-muted"> (+ {inr(dues.pending)} {t('waiting', 'प्रतीक्षा में')})</span>}</td><td className="text-right tabular-nums">{inr(dues.paid)}</td></tr>
+                <tr className="border-t border-line font-bold"><td>{t('Balance', 'शेष')}</td><td className="text-right tabular-nums">{inr(dues.balance)}</td></tr>
+              </tbody></table>
+            </>
           )}
-          <p className="text-sm text-muted">{t('You may pay in instalments: enter any amount below. For a waiver, ask your chapter coordinator.', 'आप किश्तों में भुगतान कर सकते हैं: नीचे कोई भी राशि लिखें। छूट के लिए अपने शाखा संयोजक से कहें।')}</p>
+          <p className="text-sm text-muted">{t('Need a waiver? Ask your chapter coordinator.', 'छूट चाहिए? अपने शाखा संयोजक से कहें।')}</p>
         </section>
 
         <section className="card flex flex-col gap-3">
-          <h2>{t('Pay by UPI to the trust account', 'ट्रस्ट खाते में UPI से भुगतान')}</h2>
-          {upi ? (
+          <h2>{t('Step 1: Pay by UPI', 'चरण 1: UPI से भुगतान करें')}</h2>
+          {cfg.upi_id ? (
             <div className="flex flex-wrap items-start gap-4">
-              <div className="w-[180px] overflow-hidden rounded-lg border border-line2 bg-white p-1" dangerouslySetInnerHTML={{ __html: qr }} />
-              <div className="flex min-w-[180px] flex-1 flex-col gap-2">
-                <div><span className="lbl">UPI ID</span><p className="break-all font-bold">{upi}</p></div>
-                <div><span className="lbl">{t('Write this as the note', 'नोट में यह लिखें')}</span><p className="font-bold">{ref}</p></div>
-                <p className="text-sm text-muted">{t('Pay in any UPI app, then fill the form below. No gateway fee.', 'किसी भी UPI ऐप से भुगतान करें, फिर नीचे फ़ॉर्म भरें। कोई गेटवे शुल्क नहीं।')}</p>
+              <div className="w-[170px] overflow-hidden rounded-xl border border-line2 bg-white p-1" dangerouslySetInnerHTML={{ __html: qr }} />
+              <div className="flex min-w-[170px] flex-1 flex-col gap-2">
+                <div><span className="lbl">UPI ID</span><p className="break-all font-bold">{cfg.upi_id}</p></div>
+                <div><span className="lbl">{t('Write this in the note', 'नोट में यह लिखें')}</span><p className="font-bold">{ref}</p></div>
+                <div className="flex flex-wrap gap-2">
+                  <CopyButton text={cfg.upi_id} label={t('Copy UPI ID', 'UPI ID कॉपी करें')} doneLabel={t('Copied', 'कॉपी हुआ')} />
+                  <a href={upiLink} className="btn btn-sm md:hidden"><Icon name="phone" className="h-4 w-4" />{t('Open UPI app', 'UPI ऐप खोलें')}</a>
+                </div>
               </div>
             </div>
-          ) : <p className="text-muted">{t('The trust UPI ID is not set yet.', 'ट्रस्ट का UPI ID अभी सेट नहीं है।')}</p>}
+          ) : <p className="text-muted">{t('The trust UPI ID is not set yet. The admin can add it in Settings.', 'ट्रस्ट का UPI ID अभी सेट नहीं है। प्रबंधक इसे सेटिंग में जोड़ सकते हैं।')}</p>}
+          <h2 className="mt-1">{t('Step 2: Tell us below', 'चरण 2: नीचे बताएँ')}</h2>
         </section>
       </div>
 
-      <form action={submitPayment} className="card flex flex-col gap-3">
-        <input type="hidden" name="kind" value="dues" />
-        <h2>{t('I have paid my dues', 'मैंने शुल्क जमा कर दिया')}</h2>
-        <div className="form-grid">
-          <Field label={t('Amount paid (₹)', 'जमा राशि (₹)')}><input name="amount" type="number" min="1" defaultValue={dues.balance || ''} required className="input" /></Field>
-          <Field label={t('UTR / transaction ID', 'UTR / लेन-देन संख्या')}><input name="utr" className="input" placeholder={t('12 digits from your UPI app', 'आपके UPI ऐप से 12 अंक')} /></Field>
-          <ShotInput userId={c.user.id} label={t('Screenshot (optional)', 'स्क्रीनशॉट (वैकल्पिक)')} okLabel={t('Attached ✓', 'जुड़ गया ✓')} />
-        </div>
-        <div><Submit className="btn-gold">{t('Send to treasurer', 'कोषाध्यक्ष को भेजें')}</Submit></div>
-      </form>
-
-      <form id="occasion" action={submitPayment} className="card flex flex-col gap-3">
-        <input type="hidden" name="kind" value="occasion" />
-        <div><span className="lbl">{t('Voluntary · any amount', 'स्वैच्छिक · कोई भी राशि')}</span><h2>{t('Contribute on an occasion', 'अवसर पर सहयोग')}</h2>
-          <p className="text-sm text-muted">{t('For a marriage, a birth, moksh or any family occasion. The amount is entirely your choice.', 'विवाह, जन्म, मोक्ष या किसी भी पारिवारिक अवसर के लिए। राशि पूरी तरह आपकी इच्छा है।')}</p></div>
-        <div className="flex flex-wrap gap-1.5">
-          {OCCASIONS.map((o) => <Link key={o.key} scroll={false} href={`/payments?occasion=${encodeURIComponent(o.key)}#occasion`} className="chip" aria-pressed={occ.key === o.key}>{lang === 'hi' ? o.hi : o.en}</Link>)}
-          <Link scroll={false} href="/payments?occasion=Donation#occasion" className="chip" aria-pressed={sp.occasion === 'Donation'}>{t('Donation', 'दान')}</Link>
-        </div>
-        <input type="hidden" name="occasion" value={sp.occasion === 'Donation' ? '' : occ.key} />
-        <div className="form-grid">
-          <Field label={t('Amount (₹)', 'राशि (₹)')}><input name="amount" type="number" min="1" defaultValue={occAmount} required className="input" /></Field>
-          <Field label={t('Goes to', 'किस कोष में')}>
-            <select name="fund" className="input" defaultValue="general">{FUNDS.map((f) => <option key={f.key} value={f.key}>{lang === 'hi' ? f.hi : f.en}</option>)}</select>
-          </Field>
-          <Field label={t('In the name of the family', 'परिवार के नाम से')}><input name="label" defaultValue={c.household.head_name} className="input" /></Field>
-          <Field label={t('UTR / transaction ID', 'UTR / लेन-देन संख्या')}><input name="utr" className="input" /></Field>
-          <ShotInput userId={c.user.id} label={t('Screenshot (optional)', 'स्क्रीनशॉट (वैकल्पिक)')} okLabel={t('Attached ✓', 'जुड़ गया ✓')} />
-        </div>
-        <fieldset className="flex flex-col gap-1.5">
-          <legend className="flabel mb-1 text-[0.8rem] font-semibold text-muted">{t('Who can see this on the Shubh samachar board? Your choice.', 'शुभ समाचार पट पर इसे कौन देख सके? आपकी पसंद।')}</legend>
-          <label className="flex items-center gap-2"><input type="radio" name="visibility" value="amount" />{t('Name and amount', 'नाम और राशि')}</label>
-          <label className="flex items-center gap-2"><input type="radio" name="visibility" value="name" defaultChecked />{t('Name only', 'केवल नाम')}</label>
-          <label className="flex items-center gap-2"><input type="radio" name="visibility" value="private" />{t('Private (treasurer only)', 'गोपनीय (केवल कोषाध्यक्ष)')}</label>
-        </fieldset>
-        <div><Submit className="btn-gold">{t('Send to treasurer', 'कोषाध्यक्ष को भेजें')}</Submit></div>
-      </form>
+      <PayForms action={submitPayment} userId={c.user.id} balance={dues.balance} headName={c.household.head_name}
+        occasions={OCCASIONS.map((o) => ({ key: o.key, label: lang === 'hi' ? o.hi : o.en, amount: o.amount }))}
+        funds={FUNDS.map((f) => ({ key: f.key, label: lang === 'hi' ? f.hi : f.en }))} L={L} initialTab={sp.tab === 'occasion' ? 'occasion' : 'dues'} />
 
       <section className="card flex flex-col gap-3">
         <h2>{t('Your payment history', 'आपके भुगतान का विवरण')}</h2>
         {(history ?? []).length === 0 ? <Empty>{t('No payments yet.', 'अभी कोई भुगतान नहीं।')}</Empty> : (
-          <div className="overflow-x-auto"><table className="tbl"><thead><tr><th>{t('Date', 'दिनांक')}</th><th>{t('For', 'किसलिए')}</th><th>{t('Status', 'स्थिति')}</th><th className="text-right">{t('Amount', 'राशि')}</th><th /></tr></thead><tbody>
+          <div className="flex flex-col divide-y divide-line">
             {(history ?? []).map((p) => (
-              <tr key={p.id}>
-                <td>{fmtDate(p.created_at, lang)}</td><td>{kindLabel(p)}</td><td>{statusPill(p.status)}</td>
-                <td className="text-right tabular-nums">{inr(p.amount)}</td>
-                <td className="text-right">{p.status === 'confirmed' && <Link href={`/payments/${p.id}/receipt`} className="font-semibold text-brand underline">{p.receipt_no}</Link>}</td>
-              </tr>
+              <div key={p.id} className="flex flex-wrap items-center gap-3 py-3 first:pt-0">
+                <div className="min-w-0 flex-1"><b>{kindLabel(p)}</b><p className="text-sm text-muted">{fmtDate(p.created_at, lang)}{p.note && p.status === 'rejected' ? ` · ${p.note}` : ''}</p></div>
+                {statusPill(p.status)}
+                <b className="w-24 text-right tabular-nums">{inr(p.amount)}</b>
+                {p.status === 'confirmed' ? <Link href={`/payments/${p.id}/receipt`} className="btn-alt btn btn-sm">{t('Receipt', 'रसीद')} {p.receipt_no}</Link> : <span className="w-[110px]" />}
+              </div>
             ))}
-          </tbody></table></div>
+          </div>
         )}
       </section>
     </>

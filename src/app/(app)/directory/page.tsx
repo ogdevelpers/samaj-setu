@@ -1,7 +1,6 @@
-import Link from 'next/link';
 import { requireMember } from '@/lib/ctx';
 import { Avatar, Empty, PageHead } from '@/components/ui';
-import { fmtDate } from '@/lib/utils';
+import { DirectoryFilters } from '@/components/directory-filters';
 
 type Search = { q?: string; state?: string; district?: string; area?: string };
 
@@ -10,9 +9,6 @@ export default async function DirectoryPage({ searchParams }: { searchParams: Pr
   const c = await requireMember();
   const { t, lang, sb } = c;
   const { data: chapters } = await sb.from('chapters').select('id,state,district,area').order('state').order('district').order('area');
-  const states = [...new Set((chapters ?? []).map((x) => x.state))];
-  const districts = [...new Set((chapters ?? []).filter((x) => !sp.state || x.state === sp.state).map((x) => x.district))];
-  const areas = (chapters ?? []).filter((x) => (!sp.state || x.state === sp.state) && (!sp.district || x.district === sp.district));
   const chapterIds = (chapters ?? [])
     .filter((x) => (!sp.state || x.state === sp.state) && (!sp.district || x.district === sp.district) && (!sp.area || x.area === sp.area))
     .map((x) => x.id);
@@ -32,17 +28,7 @@ export default async function DirectoryPage({ searchParams }: { searchParams: Pr
   return (
     <>
       <PageHead kicker={t('Members only', 'केवल सदस्यों के लिए')} title={t('Member directory', 'सदस्य निर्देशिका')} sub={t('Browse by place. Phone numbers show only if the family allows it.', 'स्थान के अनुसार खोजें। फोन नंबर तभी दिखते हैं जब परिवार अनुमति दे।')} />
-      <form method="get" className="card form-grid lg:grid-cols-4">
-        <div className="field sm:col-span-2 lg:col-span-4"><label htmlFor="q">{t('Search name or profession', 'नाम या व्यवसाय खोजें')}</label><input id="q" name="q" defaultValue={sp.q ?? ''} className="input" /></div>
-        <div className="field"><label htmlFor="state">{t('State', 'राज्य')}</label>
-          <select id="state" name="state" defaultValue={sp.state ?? ''} className="input"><option value="">{t('All', 'सभी')}</option>{states.map((s) => <option key={s}>{s}</option>)}</select></div>
-        <div className="field"><label htmlFor="district">{t('District', 'जिला')}</label>
-          <select id="district" name="district" defaultValue={sp.district ?? ''} className="input"><option value="">{t('All', 'सभी')}</option>{districts.map((s) => <option key={s}>{s}</option>)}</select></div>
-        <div className="field"><label htmlFor="area">{t('Village / area', 'गाँव / क्षेत्र')}</label>
-          <select id="area" name="area" defaultValue={sp.area ?? ''} className="input"><option value="">{t('All', 'सभी')}</option>{[...new Set(areas.map((a) => a.area))].map((s) => <option key={s}>{s}</option>)}</select></div>
-        <div className="flex items-end"><button className="btn w-full">{t('Search', 'खोजें')}</button></div>
-        <p className="text-sm text-muted sm:col-span-2 lg:col-span-4">{t('Tip: choose state and district, press Search, then narrow by area.', 'सुझाव: राज्य और जिला चुनकर खोजें, फिर क्षेत्र से सीमित करें।')}</p>
-      </form>
+      <DirectoryFilters chapters={chapters ?? []} labels={{ search: t('Search name or profession', 'नाम या व्यवसाय खोजें'), state: t('State', 'राज्य'), district: t('District', 'जिला'), area: t('Area', 'क्षेत्र'), all: t('All', 'सभी'), clear: t('Clear filters', 'फ़िल्टर हटाएँ') }} />
       {(people ?? []).length === 0 && <Empty>{t('No members match these filters.', 'इन फ़िल्टर से कोई सदस्य नहीं मिला।')}</Empty>}
       <div className="grid-auto">
         {(people ?? []).map((p: any) => {
