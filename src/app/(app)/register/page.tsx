@@ -10,7 +10,7 @@ export default async function RegisterPage({ searchParams }: { searchParams: Pro
   const c = await getCtx();
   const { t } = c;
   if (c.household) redirect('/family');
-  const { data: chapters } = await c.sb.from('chapters').select('id,name,state,district,area').order('state').order('district').order('area');
+  const { data: chapters, error: chaptersError } = await c.sb.from('chapters').select('id,name,state,district,area').order('state').order('district').order('area');
   const byState = new Map<string, typeof chapters>();
   (chapters ?? []).forEach((ch) => byState.set(ch.state, [...(byState.get(ch.state) ?? []), ch]));
 
@@ -23,7 +23,10 @@ export default async function RegisterPage({ searchParams }: { searchParams: Pro
       />
       <Flash err={sp.err} />
       {(chapters ?? []).length === 0 ? (
-        <div className="card-flat">{t('No places have been set up yet. Ask the committee to add your chapter.', 'अभी कोई स्थान जोड़ा नहीं गया है। समिति से अपनी शाखा जोड़ने को कहें।')}</div>
+        <div className="card-flat">
+          {t('No places have been set up yet. Ask the committee to add your chapter.', 'अभी कोई स्थान जोड़ा नहीं गया है। समिति से अपनी शाखा जोड़ने को कहें।')}
+          {chaptersError && <p className="mt-2 break-words text-sm text-bad">Database says: {chaptersError.message}</p>}
+        </div>
       ) : (
         <form action={registerHousehold} className="card flex flex-col gap-4">
           <div className="form-grid">
