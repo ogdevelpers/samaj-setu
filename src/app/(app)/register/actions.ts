@@ -9,11 +9,15 @@ export async function registerHousehold(fd: FormData) {
   if (c.household) redirect('/family');
   const fail = (m: string) => redirect(`/register?err=${encodeURIComponent(m)}`);
   const name = str(fd.get('name'));
-  const chapter = str(fd.get('chapter'));
-  if (!name || !chapter) fail(t('Please fill your name and choose your place.', 'कृपया अपना नाम भरें और स्थान चुनें।'));
-  if (fd.get('consent') !== 'on') fail(t('Please tick the consent box.', 'कृपया सहमति का बॉक्स चुनें।'));
+  const chapter = strOrNull(fd.get('chapter'));
+  const area = strOrNull(fd.get('place_area'));
+  if (!name) fail(t('Please write your name.', 'कृपया अपना नाम लिखें।'));
+  if (!chapter && !area) fail(t('Please choose or write your place.', 'कृपया अपना स्थान चुनें या लिखें।'));
 
-  const { data: h, error } = await sb.from('households').insert({ head_user_id: user.id, head_name: name, chapter_id: chapter }).select('id').single();
+  const { data: h, error } = await sb.from('households').insert({
+    head_user_id: user.id, head_name: name, chapter_id: chapter,
+    place_state: strOrNull(fd.get('place_state')), place_district: strOrNull(fd.get('place_district')), place_area: area,
+  }).select('id').single();
   if (error || !h) fail(error?.message ?? 'Could not register');
   const hid = h!.id as string;
   const phone = strOrNull(fd.get('phone'));
@@ -30,5 +34,5 @@ export async function registerHousehold(fd: FormData) {
     .single();
   if (p) await sb.from('person_contacts').insert({ person_id: p.id, phone, visible: fd.get('show_phone') === 'on' });
   await sb.from('profiles').update({ full_name: name }).eq('id', user.id);
-  redirect(`/family?ok=${encodeURIComponent(t('Sent to your local coordinator for approval. Add the other family members now.', 'स्थानीय संयोजक को स्वीकृति के लिए भेज दिया गया। अब परिवार के अन्य सदस्य जोड़ें।'))}`);
+  redirect(`/family?ok=${encodeURIComponent(t('Registered. Now add your family members, or do it later.', 'पंजीकरण हो गया। अब परिवार के सदस्य जोड़ें, या बाद में जोड़ें।'))}`);
 }

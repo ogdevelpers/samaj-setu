@@ -27,6 +27,8 @@ export default async function SignupPage({ searchParams }: { searchParams: Promi
           <label htmlFor="password">{t('Password (8 or more characters)', 'पासवर्ड (8 या अधिक अक्षर)')}</label>
           <input id="password" name="password" type="password" required minLength={8} autoComplete="new-password" className="input" />
         </div>
+        <label className="flex items-start gap-2 text-sm"><input type="checkbox" name="consent" required className="mt-1" />
+          <span>{t('I agree that the samaj may store my family\'s information and show it only to verified members.', 'मैं सहमत हूँ कि समाज मेरे परिवार की जानकारी रखे और केवल सत्यापित सदस्यों को दिखाए।')}</span></label>
         <Submit>{t('Create account', 'खाता बनाएँ')}</Submit>
       </form>
       <p className="text-sm text-muted">

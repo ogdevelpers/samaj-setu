@@ -11,7 +11,25 @@ const MONEY = ['admin', 'treasurer'];
 /* ---------- approvals and families ---------- */
 export async function approveHousehold(fd: FormData) {
   const c = await requireStaff(POST);
-  const { error } = await c.sb.from('households').update({ status: 'approved', reject_note: null }).eq('id', str(fd.get('id')));
+  const id = str(fd.get('id'));
+  const { data: h } = await c.sb.from('households').select('chapter_id,place_state,place_district,place_area').eq('id', id).single();
+  if (!h) done('/admin/approvals', c.t('Family not found.', 'परिवार नहीं मिला।'), 'err');
+  let chapter = strOrNull(fd.get('chapter')) ?? h!.chapter_id;
+  if (chapter === '__new') {
+    if (!c.isAdmin) done('/admin/approvals', c.t('Only the admin can create a new place.', 'केवल प्रबंधक नया स्थान बना सकते हैं।'), 'err');
+    const area = h!.place_area ?? '';
+    const district = h!.place_district || area;
+    // reuse a place with the same name if it already exists
+    const { data: same } = await c.sb.from('chapters').select('id').ilike('area', area).ilike('district', district).limit(1);
+    if (same?.length) chapter = same[0].id;
+    else {
+      const { data: made, error } = await c.sb.from('chapters').insert({ name: district === area ? area : `${district} - ${area}`, state: h!.place_state || '—', district, area }).select('id').single();
+      if (error || !made) done('/admin/approvals', error?.message ?? 'Could not create place', 'err');
+      chapter = made!.id;
+    }
+  }
+  if (!chapter) done('/admin/approvals', c.t('Choose a place for this family first.', 'पहले इस परिवार का स्थान चुनें।'), 'err');
+  const { error } = await c.sb.from('households').update({ status: 'approved', reject_note: null, chapter_id: chapter }).eq('id', id);
   if (error) done('/admin/approvals', error.message, 'err');
   revalidatePath('/admin', 'layout');
   done('/admin/approvals', c.t('Approved. The family can now use the portal.', 'स्वीकृत। परिवार अब पोर्टल का उपयोग कर सकता है।'));

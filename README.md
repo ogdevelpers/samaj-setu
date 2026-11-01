@@ -8,7 +8,7 @@ Next.js 15 on Vercel, Supabase (Postgres, login, private file storage). Runs on 
 ### 1. Supabase (free)
 1. Create a project at supabase.com (choose a region near India, e.g. Mumbai).
 2. SQL Editor > New query > paste `supabase/schema.sql` > Run.
-   *Already ran an older version?* Run `supabase/updates/002_admin_setup.sql` instead (adds the settings table and the first-admin setup).
+   *Already ran an older version?* Run, in order, `supabase/updates/002_admin_setup.sql` and `supabase/updates/003_simple_registration.sql` instead.
 3. Project Settings > API: copy the **Project URL** and the **anon public key**.
 4. Authentication > Providers > Email: for a small pilot you can switch off "Confirm email" so people can sign in at once.
 
@@ -26,7 +26,7 @@ Authentication > URL Configuration: Site URL = your Vercel URL; Redirect URLs: a
 ### 4. Open the admin console (no SQL needed)
 Go to `https://YOUR-URL/admin/login`. While no admin exists it shows **Set up the portal**. Create the first admin account there.
 The Overview page then gives a checklist:
-1. **Places (chapters)**: add your cities or villages.
+1. **Places (chapters)**: optional. Families can register without any place existing; you assign or create the place when you approve them.
 2. **Settings**: yearly fee per member and the trust UPI ID.
 3. **People & roles**: after a coordinator and a treasurer sign up normally, give them their role and place.
 4. **Announcements**: post the first event.
