@@ -6,12 +6,16 @@ import { LangToggle } from '@/components/lang-toggle';
 import { Icon } from '@/components/icon';
 import { createClient } from '@/lib/supabase/server';
 import { getT } from '@/lib/i18n';
+import { getSetupState } from '@/lib/setup';
+import { redirect } from 'next/navigation';
 
 export default async function AdminLogin({ searchParams }: { searchParams: Promise<{ err?: string }> }) {
   const sp = await searchParams;
   const { t } = await getT();
   const sb = await createClient();
-  const { data: has } = await sb.rpc('has_admin');
+  const state = await getSetupState(sb);
+  if (state === 'no_env' || state === 'no_schema' || state === 'needs_update') redirect('/setup');
+  const has = state === 'ready';
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-md flex-col justify-center gap-5 px-4 py-10">
       <Flash err={sp.err} />

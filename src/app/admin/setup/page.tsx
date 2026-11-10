@@ -5,13 +5,15 @@ import { Flash } from '@/components/ui';
 import { Submit } from '@/components/submit';
 import { createClient } from '@/lib/supabase/server';
 import { getT } from '@/lib/i18n';
+import { getSetupState } from '@/lib/setup';
 
 export default async function AdminSetup({ searchParams }: { searchParams: Promise<{ err?: string }> }) {
   const sp = await searchParams;
   const { t } = await getT();
   const sb = await createClient();
-  const { data: has } = await sb.rpc('has_admin');
-  if (has) redirect('/admin/login');
+  const state = await getSetupState(sb);
+  if (state === 'ready') redirect('/admin/login');
+  if (state !== 'no_admin') redirect('/setup');
   const needCode = !!process.env.ADMIN_SETUP_CODE;
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-md flex-col justify-center gap-5 px-4 py-10">

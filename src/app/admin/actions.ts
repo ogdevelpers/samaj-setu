@@ -25,7 +25,8 @@ export async function setupAdmin(fd: FormData) {
   const { t } = await getT();
   const sb = await createClient();
   const fail = (m: string) => back('/admin/setup', m);
-  const { data: has } = await sb.rpc('has_admin');
+  const { data: has, error: hasErr } = await sb.rpc('has_admin');
+  if (hasErr) redirect('/setup');
   if (has) fail(t('An admin already exists. Please sign in.', 'प्रबंधक पहले से है। कृपया साइन इन करें।'));
   const need = process.env.ADMIN_SETUP_CODE;
   if (need && str(fd.get('code')) !== need) fail(t('The setup code is wrong.', 'सेटअप कोड गलत है।'));
@@ -38,7 +39,8 @@ export async function setupAdmin(fd: FormData) {
     if (up.error) fail(up.error.message);
     if (!up.data.session) fail(t('Account created. Open the confirmation email, then come back here and submit this page again.', 'खाता बन गया। पुष्टि ईमेल खोलें, फिर यहाँ लौटकर यह पेज फिर से भेजें।'));
   }
-  const { data: ok } = await sb.rpc('claim_first_admin');
-  if (!ok) fail(t('Could not make you the admin. Someone else may have set up first.', 'आपको प्रबंधक नहीं बनाया जा सका। संभव है किसी और ने पहले सेटअप कर लिया।'));
+  const { data: ok, error: claimErr } = await sb.rpc('claim_first_admin');
+  if (claimErr) redirect('/setup');
+  if (!ok) fail(t('An admin already exists. Please use Admin sign-in.', 'प्रबंधक पहले से है। कृपया प्रबंधक साइन इन उपयोग करें।'));
   redirect('/admin?welcome=1');
 }

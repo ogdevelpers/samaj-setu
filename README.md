@@ -3,35 +3,36 @@
 Members, families, family tree, events, gallery, dues and contributions. Hindi first, English available.
 Next.js 15 on Vercel, Supabase (Postgres, login, private file storage). Runs on free tiers.
 
-## Set up (about 20 minutes)
+## Set up (for non-technical people)
 
-### 1. Supabase (free)
-1. Create a project at supabase.com (choose a region near India, e.g. Mumbai).
-2. SQL Editor > New query > paste `supabase/schema.sql` > Run.
-   *Already ran an older version?* Run, in order, `supabase/updates/002_admin_setup.sql` and `supabase/updates/003_simple_registration.sql` instead.
-3. Project Settings > API: copy the **Project URL** and the **anon public key**.
-4. Authentication > Providers > Email: for a small pilot you can switch off "Confirm email" so people can sign in at once.
+You need two free accounts: **Supabase** (the database) and **Vercel** (the website). Then the website guides you.
 
-### 2. Vercel
-1. Import the GitHub repository in Vercel (Framework: Next.js, automatic).
-2. Environment variables:
-   - `NEXT_PUBLIC_SUPABASE_URL`
-   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-   - `ADMIN_SETUP_CODE` (optional, recommended): a secret word that the first admin must type. Stops a stranger from claiming admin.
-3. Deploy, copy the live URL.
+1. **Supabase:** create a free project at supabase.com. Note the database password you choose.
+2. **Vercel:** import this GitHub repository. Before deploying, add these Environment Variables:
 
-### 3. Tell Supabase the live URL
-Authentication > URL Configuration: Site URL = your Vercel URL; Redirect URLs: add `https://YOUR-URL/auth/callback`.
+   | Name | Where to find it |
+   |---|---|
+   | `NEXT_PUBLIC_SUPABASE_URL` | Supabase → Project Settings → API → Project URL |
+   | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase → Project Settings → API → anon public key |
+   | `DATABASE_URL` | Supabase → green **Connect** button → **Transaction pooler** string. Replace `[YOUR-PASSWORD]` with your database password |
+   | `ADMIN_SETUP_CODE` | Optional. Any secret word you choose. Stops a stranger from becoming admin |
 
-### 4. Open the admin console (no SQL needed)
-Go to `https://YOUR-URL/admin/login`. While no admin exists it shows **Set up the portal**. Create the first admin account there.
-The Overview page then gives a checklist:
-1. **Places (chapters)**: optional. Families can register without any place existing; you assign or create the place when you approve them.
-2. **Settings**: yearly fee per member and the trust UPI ID.
-3. **People & roles**: after a coordinator and a treasurer sign up normally, give them their role and place.
-4. **Announcements**: post the first event.
+3. Open `https://YOUR-SITE/setup`. It shows three steps and turns each one green:
+   **Connect** → **Install the database (one button)** → **Create the admin account**.
+4. In Supabase → Authentication → URL Configuration: set Site URL to your website address and add
+   `https://YOUR-SITE/auth/callback` as a Redirect URL. (For a small pilot you can also switch off "Confirm email" under Authentication → Providers → Email.)
 
-Families use the normal site (`/`). Admins, coordinators and treasurers use `/admin`.
+Once an admin exists, the installer locks itself. You can then delete `DATABASE_URL` from Vercel.
+
+### Two separate doors
+- **Members** use the normal site: `/login` and `/signup`.
+- **Admin, coordinators and treasurers** use `/admin/login`.
+
+After you create the admin account, the Overview page gives a short checklist (fee and UPI ID, coordinator and treasurer,
+first event). Places are optional: families can register without them and you create the place when you approve them.
+
+*Manual option:* instead of the button, you can paste `supabase/schema.sql` into Supabase → SQL Editor. If you installed an
+older version, run `supabase/updates/002_admin_setup.sql` then `supabase/updates/003_simple_registration.sql`.
 
 ## Roles
 | Role | Can do |
