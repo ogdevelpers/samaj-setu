@@ -25,6 +25,12 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
     <>
       <PageHead title={t('My account', 'मेरा खाता')} sub={`${c.user.email} · ${roleName[c.role]}`} />
       <Flash ok={sp.ok} err={sp.err} />
+      <section className="card flex flex-col gap-2">
+        <h2>{t('Your status', 'आपकी स्थिति')}</h2>
+        <p><span className="text-muted">{t('Signed in as', 'साइन इन')}:</span> <b>{c.user.email}</b></p>
+        <p><span className="text-muted">{t('Role', 'भूमिका')}:</span> <b>{roleName[c.role]}</b></p>
+        <p><span className="text-muted">{t('Family', 'परिवार')}:</span> <b>{!c.household ? t('Not registered yet', 'अभी पंजीकृत नहीं') : c.household.status === 'approved' ? t('Approved', 'स्वीकृत') : c.household.status === 'pending' ? t('Waiting for approval', 'स्वीकृति की प्रतीक्षा') : t('Returned. Please fix and resend.', 'लौटाया गया। कृपया सुधारकर फिर भेजें।')}</b></p>
+      </section>
       <form action={saveAccount} className="card flex max-w-xl flex-col gap-3">
         <Field label={t('Your name', 'आपका नाम')}><input name="name" defaultValue={c.profile?.full_name ?? ''} className="input" /></Field>
         <Field label={t('New password (leave empty to keep)', 'नया पासवर्ड (न बदलना हो तो खाली छोड़ें)')}><input name="password" type="password" minLength={8} autoComplete="new-password" className="input" /></Field>

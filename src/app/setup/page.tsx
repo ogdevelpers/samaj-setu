@@ -29,7 +29,7 @@ export default async function SetupPage({ searchParams }: { searchParams: Promis
   const state = await getSetupState(sb);
   const hasUrl = !!process.env.DATABASE_URL;
   const needCode = !!process.env.ADMIN_SETUP_CODE;
-  const fullSql = state === 'no_schema' ? read('schema.sql') : ["updates/002_admin_setup.sql", "updates/003_simple_registration.sql", "updates/004_profile_repair.sql", "updates/005_link_repair.sql"].map(read).join('\n');
+  const fullSql = state === 'no_schema' ? read('schema.sql') : read('fix-everything.sql');
   const dbReady = state === 'no_admin' || state === 'ready';
 
   return (
@@ -68,7 +68,7 @@ export default async function SetupPage({ searchParams }: { searchParams: Promis
                 <b>{t('One more value is needed for the button:', 'बटन के लिए एक और मान चाहिए:')}</b>
                 <ol className="mt-1 list-decimal space-y-1 pl-5 text-ink">
                   <li>{t('Supabase → click the green Connect button at the top → copy the "Transaction pooler" connection string.', 'Supabase → ऊपर हरे Connect बटन पर क्लिक करें → "Transaction pooler" कनेक्शन स्ट्रिंग कॉपी करें।')}</li>
-                  <li>{t('Replace [YOUR-PASSWORD] in it with your database password.', 'उसमें [YOUR-PASSWORD] की जगह अपना डेटाबेस पासवर्ड लिखें।')}</li>
+                  <li>{t('Replace [YOUR-PASSWORD] in it with your database password. Use a password with only letters and numbers, or the link may not work.', 'उसमें [YOUR-PASSWORD] की जगह अपना डेटाबेस पासवर्ड लिखें। पासवर्ड में केवल अक्षर और अंक रखें, वरना लिंक काम नहीं करेगा।')}</li>
                   <li>{t('In Vercel add it as DATABASE_URL, redeploy, and refresh this page.', 'Vercel में इसे DATABASE_URL नाम से जोड़ें, फिर Deploy करें और यह पेज रीफ़्रेश करें।')}</li>
                 </ol>
               </div>
@@ -90,6 +90,11 @@ export default async function SetupPage({ searchParams }: { searchParams: Promis
         {state === 'no_admin' && (<><p>{t('You will be the admin. You choose an email and password. Members never use this page.', 'आप प्रबंधक होंगे। आप अपना ईमेल और पासवर्ड चुनेंगे। सदस्य इस पेज का उपयोग नहीं करते।')}</p><div><Link href="/admin/setup" className="btn-gold btn">{t('Create admin account', 'प्रबंधक खाता बनाएँ')}</Link></div></>)}
         {state !== 'no_admin' && state !== 'ready' && <p className="text-muted">{t('Finish step 2 first.', 'पहले चरण 2 पूरा करें।')}</p>}
       </Step>
+      <section className="card flex flex-col gap-2 border-accent">
+        <h2>{t('Recommended: make sign-up easy', 'सुझाव: साइन अप आसान रखें')}</h2>
+        <p className="text-muted">{t('By default Supabase makes every new person confirm their email, which many members find hard. You approve each family anyway, so you can switch this off.', 'डिफ़ॉल्ट रूप से Supabase हर नए व्यक्ति से ईमेल पुष्टि करवाता है, जो कई सदस्यों के लिए कठिन है। आप हर परिवार को वैसे भी स्वीकृत करते हैं, इसलिए इसे बंद कर सकते हैं।')}</p>
+        <p><b>Supabase → Authentication → Sign In / Providers → Email → turn off "Confirm email" → Save.</b></p>
+      </section>
     </main>
   );
 }

@@ -46,6 +46,7 @@ export default async function Home() {
   }
 
   const nowIso = new Date().toISOString();
+  const committeeOnly = c.isStaff && !c.household;
   const [{ data: stats }, { data: events }, { data: notices }, { data: bdays }] = await Promise.all([
     sb.rpc('community_stats'),
     sb.from('events').select('id,title,starts_at,venue').gte('starts_at', nowIso).order('starts_at').limit(3),
@@ -64,6 +65,12 @@ export default async function Home() {
   return (
     <>
       {hello}
+      {committeeOnly && (
+        <div className="card-flat flex flex-wrap items-center justify-between gap-3">
+          <span>{t('You are signed in as committee. Your work is in the Committee area.', 'आप समिति के रूप में साइन इन हैं। आपका काम समिति क्षेत्र में है।')}</span>
+          <Link href="/admin" className="btn btn-sm">{t('Open Committee area', 'समिति क्षेत्र खोलें')}</Link>
+        </div>
+      )}
       {dues && dues.feeSet && (
         <section className="grid items-center gap-4 rounded-3xl bg-brand p-5 text-brand-ink sm:grid-cols-[1fr_auto] sm:p-6">
           <div>

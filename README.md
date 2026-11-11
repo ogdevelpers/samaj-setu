@@ -59,3 +59,8 @@ npm run dev
 ## Not included yet
 SMS/WhatsApp auto-sending (WhatsApp share and reminder links are included), online payment gateway
 (UPI QR with treasurer confirmation is used to keep it free), moving a married daughter between households.
+
+## If something looks wrong
+1. Sign in as admin, open **Overview**. A red box appears if the database needs an update. Copy, paste into Supabase SQL Editor, Run.
+2. Or run `supabase/fix-everything.sql` in Supabase → SQL Editor. It is safe to run any number of times.
+3. Open **My account** (top right). The "Your status" box shows your email, role and family status in plain words.
