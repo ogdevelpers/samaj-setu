@@ -5,7 +5,7 @@ import { getT } from './i18n';
 export async function getCtx() {
   const sb = await createClient();
   const { data } = await sb.auth.getUser();
-  if (!data.user) redirect('/login');
+  if (!data.user) redirect('/welcome');
   const user = data.user;
   const { data: profile } = await sb
     .from('profiles')

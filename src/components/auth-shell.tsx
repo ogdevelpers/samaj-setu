@@ -1,7 +1,9 @@
 import { LangToggle } from './lang-toggle';
 import { ORG_HI } from '@/lib/utils';
+import Link from 'next/link';
+import { Icon } from './icon';
 
-export function AuthShell({ title, children }: { title: string; children: React.ReactNode }) {
+export function AuthShell({ title, badge = 'Member', children }: { title: string; badge?: string; children: React.ReactNode }) {
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-md flex-col justify-center gap-5 px-4 py-10">
       <div className="flex items-center justify-between gap-3">
@@ -12,9 +14,10 @@ export function AuthShell({ title, children }: { title: string; children: React.
         <LangToggle next="/login" />
       </div>
       <div className="card flex flex-col gap-4">
-        <h1 className="!text-2xl">{title}</h1>
+        <div><span className="pill">{badge}</span><h1 className="mt-2 !text-2xl">{title}</h1></div>
         {children}
       </div>
+      <Link href="/welcome" className="flex items-center justify-center gap-1 text-sm font-semibold text-brand underline"><Icon name="home" className="h-4 w-4" />Home</Link>
     </main>
   );
 }

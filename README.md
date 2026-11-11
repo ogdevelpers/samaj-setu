@@ -25,8 +25,9 @@ You need two free accounts: **Supabase** (the database) and **Vercel** (the webs
 Once an admin exists, the installer locks itself. You can then delete `DATABASE_URL` from Vercel.
 
 ### Two separate doors
-- **Members** use the normal site: `/login` and `/signup`.
-- **Admin, coordinators and treasurers** use `/admin/login`.
+The home page (`/welcome`) shows two big buttons.
+- **Members:** `/login` and `/signup` (the light, friendly site).
+- **Admin, coordinators and treasurers:** `/admin/login` (a dark "Committee area", so it is never confused with the member site).
 
 After you create the admin account, the Overview page gives a short checklist (fee and UPI ID, coordinator and treasurer,
 first event). Places are optional: families can register without them and you create the place when you approve them.

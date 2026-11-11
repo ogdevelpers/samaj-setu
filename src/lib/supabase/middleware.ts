@@ -1,7 +1,7 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
-const PUBLIC = ['/login', '/signup', '/auth', '/setup', '/admin/login', '/admin/setup', '/manifest.webmanifest', '/icon.svg'];
+const PUBLIC = ['/welcome', '/login', '/signup', '/auth', '/setup', '/admin/login', '/admin/setup', '/manifest.webmanifest', '/icon.svg'];
 
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request });
@@ -19,7 +19,7 @@ export async function updateSession(request: NextRequest) {
   const path = request.nextUrl.pathname;
   if (!data.user && !PUBLIC.some((p) => path === p || path.startsWith(p + '/'))) {
     const url = request.nextUrl.clone();
-    url.pathname = path.startsWith('/admin') ? '/admin/login' : '/login';
+    url.pathname = path.startsWith('/admin') ? '/admin/login' : '/welcome';
     url.search = '';
     return NextResponse.redirect(url);
   }

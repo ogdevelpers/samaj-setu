@@ -51,5 +51,11 @@ export async function forgotPassword(formData: FormData) {
 export async function signOut() {
   const sb = await createClient();
   await sb.auth.signOut();
-  redirect('/login');
+  redirect('/welcome');
+}
+
+export async function signOutAdmin() {
+  const sb = await createClient();
+  await sb.auth.signOut();
+  redirect('/admin/login');
 }

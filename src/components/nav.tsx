@@ -4,9 +4,10 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Icon } from './icon';
 
-export type NavItem = { href: string; label: string; icon: string; primary?: boolean };
+export type NavItem = { href: string; label: string; icon: string; primary?: boolean; match?: string[] };
 
-const isOn = (path: string, href: string) => (href === '/' ? path === '/' : path === href || path.startsWith(href + '/'));
+const isOn = (path: string, href: string, match?: string[]) =>
+  href === '/' ? path === '/' : [href, ...(match ?? [])].some((h) => path === h || path.startsWith(h + '/'));
 
 export function Nav({ items, moreLabel, closeLabel }: { items: NavItem[]; moreLabel: string; closeLabel: string }) {
   const path = usePathname();
@@ -14,15 +15,15 @@ export function Nav({ items, moreLabel, closeLabel }: { items: NavItem[]; moreLa
   useEffect(() => setOpen(false), [path]);
   const primary = items.filter((i) => i.primary).slice(0, 4);
   const rest = items.filter((i) => !primary.includes(i));
-  const moreOn = rest.some((i) => isOn(path, i.href));
+  const moreOn = rest.some((i) => isOn(path, i.href, i.match));
 
   return (
     <>
       {/* desktop sidebar */}
       <nav aria-label="Main" className="no-print sticky top-4 hidden flex-col gap-1 self-start md:flex">
         {items.map((i) => (
-          <Link key={i.href} href={i.href} aria-current={isOn(path, i.href) ? 'page' : undefined}
-            className={`flex items-center gap-3 rounded-xl px-3.5 py-2.5 font-medium transition ${isOn(path, i.href) ? 'bg-brand text-brand-ink shadow-sm' : 'text-muted hover:bg-surface hover:text-ink'}`}>
+          <Link key={i.href} href={i.href} aria-current={isOn(path, i.href, i.match) ? 'page' : undefined}
+            className={`flex items-center gap-3 rounded-xl px-3.5 py-2.5 font-medium transition ${isOn(path, i.href, i.match) ? 'bg-brand text-brand-ink shadow-sm' : 'text-muted hover:bg-surface hover:text-ink'}`}>
             <Icon name={i.icon} />{i.label}
           </Link>
         ))}
@@ -31,9 +32,9 @@ export function Nav({ items, moreLabel, closeLabel }: { items: NavItem[]; moreLa
       {/* phone tab bar */}
       <nav aria-label="Main" className="no-print safe-bottom fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t border-line bg-surface md:hidden">
         {primary.map((i) => (
-          <Link key={i.href} href={i.href} aria-current={isOn(path, i.href) ? 'page' : undefined}
-            className={`flex flex-col items-center gap-0.5 px-1 pb-2 pt-2.5 text-[0.7rem] font-semibold ${isOn(path, i.href) ? 'text-brand' : 'text-muted'}`}>
-            <span className={`grid h-7 w-12 place-items-center rounded-full ${isOn(path, i.href) ? 'bg-brand-soft' : ''}`}><Icon name={i.icon} className="h-[22px] w-[22px]" /></span>
+          <Link key={i.href} href={i.href} aria-current={isOn(path, i.href, i.match) ? 'page' : undefined}
+            className={`flex flex-col items-center gap-0.5 px-1 pb-2 pt-2.5 text-[0.7rem] font-semibold ${isOn(path, i.href, i.match) ? 'text-brand' : 'text-muted'}`}>
+            <span className={`grid h-7 w-12 place-items-center rounded-full ${isOn(path, i.href, i.match) ? 'bg-brand-soft' : ''}`}><Icon name={i.icon} className="h-[22px] w-[22px]" /></span>
             <span className="max-w-full truncate">{i.label}</span>
           </Link>
         ))}
@@ -52,7 +53,7 @@ export function Nav({ items, moreLabel, closeLabel }: { items: NavItem[]; moreLa
             <div className="grid grid-cols-3 gap-2">
               {rest.map((i) => (
                 <Link key={i.href} href={i.href}
-                  className={`flex flex-col items-center gap-1.5 rounded-2xl border p-3 text-center text-sm font-semibold ${isOn(path, i.href) ? 'border-brand bg-brand-soft text-brand' : 'border-line text-ink'}`}>
+                  className={`flex flex-col items-center gap-1.5 rounded-2xl border p-3 text-center text-sm font-semibold ${isOn(path, i.href, i.match) ? 'border-brand bg-brand-soft text-brand' : 'border-line text-ink'}`}>
                   <Icon name={i.icon} className="h-6 w-6" />{i.label}
                 </Link>
               ))}

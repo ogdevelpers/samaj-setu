@@ -9,7 +9,7 @@ export default async function SignupPage({ searchParams }: { searchParams: Promi
   const sp = await searchParams;
   const { t } = await getT();
   return (
-    <AuthShell title={t('Create your account', 'अपना खाता बनाएँ')}>
+    <AuthShell badge={t('Member', 'सदस्य')} title={t('Create your account', 'अपना खाता बनाएँ')}>
       <p className="text-muted">
         {t('The head of the family signs up first, then registers the household and adds everyone in it.', 'परिवार के मुखिया पहले खाता बनाते हैं, फिर परिवार पंजीकृत करके सभी सदस्यों को जोड़ते हैं।')}
       </p>

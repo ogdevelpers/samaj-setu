@@ -16,7 +16,7 @@
   }
 }
 
-body { @apply bg-bg font-body text-ink antialiased; font-size: 15px; line-height: 1.5; }
+body { @apply bg-bg font-body text-ink antialiased; font-size: 16px; line-height: 1.55; }
 h1 { @apply font-display text-[1.7rem] leading-tight md:text-[2.1rem]; font-weight: 400; text-wrap: balance; }
 h2 { @apply text-[1.05rem] font-bold; text-wrap: balance; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
