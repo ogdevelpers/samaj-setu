@@ -7,11 +7,19 @@ import { str } from '@/lib/utils';
 const STAFF = ['admin', 'coordinator', 'treasurer'];
 const back = (path: string, msg: string) => redirect(`${path}?err=${encodeURIComponent(msg)}`);
 
+/** Say what actually went wrong, so the person knows whether to fix the password or confirm the email. */
+function loginMessage(raw: string | undefined, t: (en: string, hi: string) => string) {
+  if (raw && /confirm/i.test(raw)) return t('Please confirm your email first. Open the email we sent and tap the link.', 'पहले अपना ईमेल पुष्ट करें। भेजा गया ईमेल खोलकर लिंक दबाएँ।');
+  if (raw && /rate|too many/i.test(raw)) return t('Too many tries. Wait a few minutes and try again.', 'बहुत बार कोशिश हुई। कुछ मिनट रुककर फिर कोशिश करें।');
+  if (!raw || /invalid/i.test(raw)) return t('Wrong email or password. Use "Forgot password" below if needed.', 'ईमेल या पासवर्ड गलत है। जरूरत हो तो नीचे "पासवर्ड भूल गए" दबाएँ।');
+  return raw;
+}
+
 export async function adminLogin(fd: FormData) {
   const { t } = await getT();
   const sb = await createClient();
   const { data, error } = await sb.auth.signInWithPassword({ email: str(fd.get('email')), password: str(fd.get('password')) });
-  if (error || !data.user) back('/admin/login', t('Wrong email or password.', 'ईमेल या पासवर्ड गलत है।'));
+  if (error || !data.user) back('/admin/login', loginMessage(error?.message, t));
   const { data: p } = await sb.from('profiles').select('role').eq('id', data!.user!.id).single();
   if (!p || !STAFF.includes(p.role)) {
     await sb.auth.signOut();

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { adminLogin } from '../actions';
+import { forgotPassword } from '../../actions';
 import { Flash } from '@/components/ui';
 import { Submit } from '@/components/submit';
 import { LangToggle } from '@/components/lang-toggle';
@@ -31,6 +32,14 @@ export default async function AdminLogin({ searchParams }: { searchParams: Promi
           <div className="field"><label htmlFor="password">{t('Password', 'पासवर्ड')}</label><input id="password" name="password" type="password" required autoComplete="current-password" className="input" /></div>
           <Submit>{t('Sign in', 'साइन इन')}</Submit>
         </form>
+        <details className="text-sm">
+          <summary className="cursor-pointer text-muted">{t('Forgot password?', 'पासवर्ड भूल गए?')}</summary>
+          <form action={forgotPassword} className="mt-3 flex flex-col gap-2">
+            <input type="hidden" name="from" value="admin" />
+            <input name="email" type="email" required placeholder={t('Your admin email', 'आपका प्रबंधक ईमेल')} className="input" aria-label="Email" />
+            <Submit className="btn-alt">{t('Send reset link', 'रीसेट लिंक भेजें')}</Submit>
+          </form>
+        </details>
       </div>
       {!has && (
         <div className="card-flat flex flex-col gap-2">

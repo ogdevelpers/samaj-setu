@@ -20,7 +20,12 @@ export async function login(formData: FormData) {
   const { t } = await getT();
   const sb = await createClient();
   const { error } = await sb.auth.signInWithPassword({ email: str(formData.get('email')), password: str(formData.get('password')) });
-  if (error) back('/login', 'err', t('Wrong email or password.', 'ईमेल या पासवर्ड गलत है।'));
+  if (error) {
+    const raw = error.message;
+    back('/login', 'err',
+      /confirm/i.test(raw) ? t('Please confirm your email first. Open the email we sent and tap the link.', 'पहले अपना ईमेल पुष्ट करें। भेजा गया ईमेल खोलकर लिंक दबाएँ।')
+      : /invalid/i.test(raw) ? t('Wrong email or password.', 'ईमेल या पासवर्ड गलत है।') : raw);
+  }
   redirect('/');
 }
 
@@ -45,7 +50,7 @@ export async function forgotPassword(formData: FormData) {
   const sb = await createClient();
   const origin = (await headers()).get('origin') ?? '';
   await sb.auth.resetPasswordForEmail(str(formData.get('email')), { redirectTo: `${origin}/auth/callback?next=/account` });
-  back('/login', 'ok', t('If that email is registered, a reset link has been sent.', 'यदि यह ईमेल पंजीकृत है तो रीसेट लिंक भेज दिया गया है।'));
+  back(str(formData.get('from')) === 'admin' ? '/admin/login' : '/login', 'ok', t('If that email is registered, a reset link has been sent.', 'यदि यह ईमेल पंजीकृत है तो रीसेट लिंक भेज दिया गया है।'));
 }
 
 export async function signOut() {
