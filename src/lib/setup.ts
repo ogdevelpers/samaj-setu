@@ -10,6 +10,7 @@ export async function getSetupState(sb: SupabaseClient): Promise<SetupState> {
   const settings = await sb.from('settings').select('key').limit(1);
   const place = await sb.from('households').select('place_area').limit(1);
   const has = await sb.rpc('has_admin');
-  if (settings.error || place.error || has.error) return 'needs_update';
+  const repair = await sb.rpc('ensure_profile');
+  if (settings.error || place.error || has.error || repair.error) return 'needs_update';
   return has.data ? 'ready' : 'no_admin';
 }

@@ -29,7 +29,7 @@ export default async function SetupPage({ searchParams }: { searchParams: Promis
   const state = await getSetupState(sb);
   const hasUrl = !!process.env.DATABASE_URL;
   const needCode = !!process.env.ADMIN_SETUP_CODE;
-  const fullSql = state === 'no_schema' ? read('schema.sql') : read('updates/002_admin_setup.sql') + '\n' + read('updates/003_simple_registration.sql');
+  const fullSql = state === 'no_schema' ? read('schema.sql') : ["updates/002_admin_setup.sql", "updates/003_simple_registration.sql", "updates/004_profile_repair.sql"].map(read).join('\n');
   const dbReady = state === 'no_admin' || state === 'ready';
 
   return (

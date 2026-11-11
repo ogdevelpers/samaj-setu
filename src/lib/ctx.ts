@@ -7,11 +7,17 @@ export async function getCtx() {
   const { data } = await sb.auth.getUser();
   if (!data.user) redirect('/welcome');
   const user = data.user;
-  const { data: profile } = await sb
+  const load = () => sb
     .from('profiles')
     .select('*, household:households(id, status, chapter_id, head_name, waiver_amount, reject_note, chapter:chapters(name, area, district, state))')
     .eq('id', user.id)
-    .single();
+    .maybeSingle();
+  let { data: profile } = await load();
+  if (!profile) {
+    // an account made before the database was installed has no profile yet; create it
+    await sb.rpc('ensure_profile');
+    profile = (await load()).data;
+  }
   const { lang, t } = await getT();
   const role: string = profile?.role ?? 'member';
   const household = profile?.household ?? null;

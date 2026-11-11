@@ -20,10 +20,15 @@ export async function adminLogin(fd: FormData) {
   const sb = await createClient();
   const { data, error } = await sb.auth.signInWithPassword({ email: str(fd.get('email')), password: str(fd.get('password')) });
   if (error || !data.user) back('/admin/login', loginMessage(error?.message, t));
-  const { data: p } = await sb.from('profiles').select('role').eq('id', data!.user!.id).single();
+  let { data: p } = await sb.from('profiles').select('role').eq('id', data!.user!.id).maybeSingle();
+  if (!p) {
+    await sb.rpc('ensure_profile');
+    p = (await sb.from('profiles').select('role').eq('id', data!.user!.id).maybeSingle()).data;
+  }
   if (!p || !STAFF.includes(p.role)) {
+    const who = data!.user!.email;
     await sb.auth.signOut();
-    back('/admin/login', t('This account is not an admin, coordinator or treasurer.', 'यह खाता प्रबंधक, संयोजक या कोषाध्यक्ष का नहीं है।'));
+    back('/admin/login', t(`${who} is a member account, not an admin. Sign in with the admin email, or ask the admin to give you a role.`, `${who} सदस्य खाता है, प्रबंधक नहीं। प्रबंधक ईमेल से साइन इन करें, या प्रबंधक से भूमिका देने को कहें।`));
   }
   redirect('/admin');
 }
