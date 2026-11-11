@@ -18,6 +18,11 @@ export async function getCtx() {
     await sb.rpc('ensure_profile');
     profile = (await load()).data;
   }
+  if (profile && !profile.household_id) {
+    // registered earlier but not linked to this account (older bug); link it now
+    const { data: linked } = await sb.rpc('link_my_household');
+    if (linked) profile = (await load()).data;
+  }
   const { lang, t } = await getT();
   const role: string = profile?.role ?? 'member';
   const household = profile?.household ?? null;

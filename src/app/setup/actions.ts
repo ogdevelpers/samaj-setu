@@ -40,6 +40,7 @@ export async function installDatabase(fd: FormData) {
         await client.query(sql('updates/002_admin_setup.sql'));
         await client.query(sql('updates/003_simple_registration.sql'));
       await client.query(sql('updates/004_profile_repair.sql'));
+      await client.query(sql('updates/005_link_repair.sql'));
       }
       await client.query('commit');
       await client.query(`notify pgrst, 'reload schema'`);

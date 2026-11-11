@@ -11,6 +11,7 @@ export async function getSetupState(sb: SupabaseClient): Promise<SetupState> {
   const place = await sb.from('households').select('place_area').limit(1);
   const has = await sb.rpc('has_admin');
   const repair = await sb.rpc('ensure_profile');
-  if (settings.error || place.error || has.error || repair.error) return 'needs_update';
+  const link = await sb.rpc('link_my_household');
+  if (settings.error || place.error || has.error || repair.error || link.error) return 'needs_update';
   return has.data ? 'ready' : 'no_admin';
 }

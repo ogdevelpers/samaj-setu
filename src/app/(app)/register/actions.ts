@@ -14,6 +14,13 @@ export async function registerHousehold(fd: FormData) {
   if (!name) fail(t('Please write your name.', 'कृपया अपना नाम लिखें।'));
   if (!chapter && !area) fail(t('Please choose or write your place.', 'कृपया अपना स्थान चुनें या लिखें।'));
 
+  // already registered (double tap, or an older half-finished attempt): link it and carry on
+  const { data: existing } = await sb.from('households').select('id').eq('head_user_id', user.id).maybeSingle();
+  if (existing) {
+    await sb.rpc('link_my_household');
+    redirect('/family');
+  }
+  await sb.rpc('ensure_profile');
   const { data: h, error } = await sb.from('households').insert({
     head_user_id: user.id, head_name: name, chapter_id: chapter,
     place_state: strOrNull(fd.get('place_state')), place_district: strOrNull(fd.get('place_district')), place_area: area,
